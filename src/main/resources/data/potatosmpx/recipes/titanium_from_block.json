@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "titanium_ingot",
+  "ingredients": [
+    {
+      "item": "potatosmpx:titanium_block"
+    }
+  ],
+  "result": {
+    "item": "potatosmpx:titanium_ingot",
+    "count": 9
+  }
+}

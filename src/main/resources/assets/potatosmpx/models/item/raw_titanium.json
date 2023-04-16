@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "potatosmpx:item/raw_titanium"
+  }
+}

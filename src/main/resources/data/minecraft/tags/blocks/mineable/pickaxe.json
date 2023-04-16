@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "potatosmpx:titanium_block",
+    "potatosmpx:titanium_ore",
+    "potatosmpx:steel_block",
+    "potatosmpx:mana_crystal_ore",
+    "potatosmpx:mana_crystal_block"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " TT",
+    " CT",
+    "SS "
+  ],
+  "key": {
+    "T": {
+      "item": "potatosmpx:titanium_ingot"
+    },
+    "C": {
+        "item": "potatosmpx:mana_crystal"
+    },
+    "S": {
+        "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "potatosmpx:titanium_wand"
+  }
+}

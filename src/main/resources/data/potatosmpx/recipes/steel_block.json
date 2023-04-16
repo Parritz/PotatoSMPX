@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "potatosmpx:steel_ingot"
+    }
+  },
+  "result": {
+    "item": "potatosmpx:steel_block"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "group": "titanium_ingot",
+  "ingredient": {
+    "item": "potatosmpx:raw_titanium"
+  },
+  "result": "potatosmpx:titanium_ingot",
+  "experience": 1.4,
+  "cookingtime": 100
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " SS",
+    "NMS",
+    "NN "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:nether_star"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+  "M": {
+      "item": "potatosmpx:master_crystal"
+    }
+  },
+  "result": {
+    "item": "potatosmpx:hero_wand"
+  }
+}

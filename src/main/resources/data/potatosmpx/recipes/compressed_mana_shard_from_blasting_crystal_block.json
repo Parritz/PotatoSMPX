@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "group": "titanium_ingot",
+  "ingredient": {
+    "item": "potatosmpx:mana_crystal_block"
+  },
+  "result": "potatosmpx:compressed_mana_shard",
+  "experience": 6.8,
+  "cookingtime": 200
+}

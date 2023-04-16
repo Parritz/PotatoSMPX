@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " TT",
+    " CT",
+    "SS "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:log"
+    },
+    "C": {
+        "item": "potatosmpx:mana_crystal"
+    },
+    "S": {
+        "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "potatosmpx:wood_wand"
+  }
+}

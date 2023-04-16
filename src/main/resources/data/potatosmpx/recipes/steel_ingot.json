@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "steel_ingot",
+  "ingredients": [
+    { "item": "minecraft:coal" }, { "item": "minecraft:coal" }, { "item": "minecraft:coal" }, { "item": "minecraft:coal" },
+    { "item": "minecraft:iron_ingot"}, { "item": "minecraft:iron_ingot"}, { "item": "minecraft:iron_ingot"}, { "item": "minecraft:iron_ingot"}
+  ],
+  "result": {
+    "item": "potatosmpx:steel_ingot",
+    "count": 4
+  }
+}
