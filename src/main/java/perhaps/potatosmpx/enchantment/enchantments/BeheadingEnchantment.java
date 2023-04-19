@@ -55,7 +55,7 @@ public class BeheadingEnchantment extends Enchantment {
         if (!(((LivingEntity) target).getHealth() <= 0)) return;
         if (!(attacker instanceof Player)) return;
 
-        if (!(entityHeads.containsKey(entityType) && world.getRandom().nextFloat() <= (0.10f * level))) return;
+        if (!(entityHeads.containsKey(entityType) && world.getRandom().nextFloat() <= (0.05f * level))) return;
 
         ItemStack entityHeadStack = new ItemStack(entityHeads.get(entityType));
         ItemEntity headEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entityHeadStack);
