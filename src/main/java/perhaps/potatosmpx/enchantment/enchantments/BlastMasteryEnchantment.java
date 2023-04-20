@@ -24,6 +24,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import perhaps.potatosmpx.enchantment.EnchantmentRarity;
+import perhaps.potatosmpx.enchantment.EnchantmentUtils;
 import perhaps.potatosmpx.enchantment.ModEnchantments;
 
 import java.util.*;
@@ -40,20 +42,15 @@ public class BlastMasteryEnchantment extends Enchantment {
     }
 
     @Override
-    public int getMinCost(int level) {
-        return level * 16;
-    }
-
+    public int getMinCost(int level) { return EnchantmentRarity.LEGENDARY.getMinCost(level); }
     @Override
-    public int getMaxCost(int level) {
-        return this.getMinCost(level) + 50;
-    }
+    public int getMaxCost(int level) { return EnchantmentRarity.LEGENDARY.getMaxCost(level); }
 
     private final Map<Item, ItemStack> recipeCache = new HashMap<>();
 
     @Override
     protected boolean checkCompatibility(Enchantment other) {
-        return super.checkCompatibility(other) && other != ModEnchantments.AUTO_SMELT.get();
+        return super.checkCompatibility(other) && EnchantmentUtils.isEnchantmentAllowed(other, Enchantments.SILK_TOUCH, ModEnchantments.AUTO_SMELT.get(), ModEnchantments.SMOKE_MASTERY.get());
     }
 
     @SubscribeEvent

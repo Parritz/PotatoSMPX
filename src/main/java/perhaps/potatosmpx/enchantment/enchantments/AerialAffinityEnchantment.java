@@ -1,26 +1,63 @@
 package perhaps.potatosmpx.enchantment.enchantments;
 
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Abilities;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import perhaps.potatosmpx.enchantment.EnchantmentRarity;
+import perhaps.potatosmpx.enchantment.ItemUtils;
+import perhaps.potatosmpx.enchantment.ModEnchantments;
+
+import java.util.Random;
 
 public class AerialAffinityEnchantment extends Enchantment {
     public AerialAffinityEnchantment(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
         super(pRarity, pCategory, pApplicableSlots);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public int getMaxLevel() {
-        return 1;
+        return 2;
     }
 
     @Override
-    public int getMinCost(int level) {
-        return 20;
-    }
+    public int getMinCost(int level) { return EnchantmentRarity.RARE.getMinCost(level); }
+    @Override
+    public int getMaxCost(int level) { return EnchantmentRarity.RARE.getMaxCost(level); }
 
     @Override
-    public int getMaxCost(int level) {
-        return 60;
+    public boolean canEnchant(ItemStack stack) {
+        Item item = stack.getItem();
+        return ItemUtils.isItemAllowed(item, Items.ELYTRA);
+    }
+
+    private static final float BASE_FLIGHT_SPEED = 0.05f;
+    private static final float SPEED_BOOST_PER_LEVEL = 0.02f;
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+        Player player = event.player;
+        ItemStack elytra = player.getItemBySlot(EquipmentSlot.CHEST);
+        int level = EnchantmentHelper.getItemEnchantmentLevel(this, elytra);
+
+        if (player.getAbilities().flying && level > 0) {
+            player.getAbilities().setFlyingSpeed(BASE_FLIGHT_SPEED + (level * SPEED_BOOST_PER_LEVEL));
+        } else {
+            player.getAbilities().setFlyingSpeed(BASE_FLIGHT_SPEED);
+        }
     }
 }

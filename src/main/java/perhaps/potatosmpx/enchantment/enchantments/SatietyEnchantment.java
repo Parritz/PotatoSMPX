@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 
 public class SatietyEnchantment extends Enchantment {
     public SatietyEnchantment(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
@@ -21,18 +22,13 @@ public class SatietyEnchantment extends Enchantment {
 
     @Override
     public int getMaxLevel() {
-        return 5;
+        return 3;
     }
 
     @Override
-    public int getMinCost(int level) {
-        return level * 12;
-    }
-
+    public int getMinCost(int level) { return EnchantmentRarity.EPIC.getMinCost(level); }
     @Override
-    public int getMaxCost(int level) {
-        return this.getMinCost(level) + 50;
-    }
+    public int getMaxCost(int level) { return EnchantmentRarity.EPIC.getMaxCost(level); }
 
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {

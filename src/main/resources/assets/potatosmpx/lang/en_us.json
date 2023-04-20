@@ -173,5 +173,7 @@
   "enchantment.potatosmpx.aerial_affinity": "Aerial Affinity",
   "enchantment.potatosmpx.aerial_affinity.desc": "Increases flight speed and reduces durability loss when flying.",
   "enchantment.potatosmpx.withering_strikes": "Withering Strikes",
-  "enchantment.potatosmpx.withering_strikes.desc": "5% chance per level to inflict Wither effect on hit."
+  "enchantment.potatosmpx.withering_strikes.desc": "5% chance per level to inflict Wither effect on hit.",
+  "enchantment.potatosmpx.green_thumb": "Green Thumb",
+  "enchantment.potatosmpx.green_thumb.desc": "Increases crop growth by 50% per level."
 }

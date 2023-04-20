@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,6 +23,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import perhaps.potatosmpx.enchantment.EnchantmentRarity;
+import perhaps.potatosmpx.enchantment.EnchantmentUtils;
+import perhaps.potatosmpx.enchantment.ModEnchantments;
 
 import java.util.*;
 
@@ -37,13 +41,13 @@ public class AutoSmeltEnchantment extends Enchantment {
     }
 
     @Override
-    public int getMinCost(int level) {
-        return 14;
-    }
+    public int getMinCost(int level) { return EnchantmentRarity.RARE.getMinCost(level); }
+    @Override
+    public int getMaxCost(int level) { return EnchantmentRarity.RARE.getMaxCost(level); }
 
     @Override
-    public int getMaxCost(int level) {
-        return 64;
+    protected boolean checkCompatibility(Enchantment other) {
+        return super.checkCompatibility(other) && EnchantmentUtils.isEnchantmentAllowed(other, Enchantments.SILK_TOUCH, ModEnchantments.SMOKE_MASTERY.get(), ModEnchantments.BLAST_MASTERY.get());
     }
 
     private final Map<Item, ItemStack> entityRecipeCache = new HashMap<>();

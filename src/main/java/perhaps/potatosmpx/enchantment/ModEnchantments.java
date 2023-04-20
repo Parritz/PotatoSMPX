@@ -36,7 +36,7 @@ public class ModEnchantments {
     public static RegistryObject<Enchantment> TIDAL_WAVE = ENCHANTMENTS.register("tidal_wave", () -> new TidalWaveEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> COLD_BLOODED = ENCHANTMENTS.register("cold_blooded", () -> new ColdBloodedEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> ATOMIC_RESISTANCE = ENCHANTMENTS.register("atomic_resistance", () -> new AtomicResistanceEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
-    public static RegistryObject<Enchantment> BOUNTIFUL_HARVEST = ENCHANTMENTS.register("bountiful_harvest", () -> new BountifulHarvestEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
+    public static RegistryObject<Enchantment> BOUNTIFUL_HARVEST = ENCHANTMENTS.register("bountiful_harvest", () -> new BountifulHarvestEnchantment(Enchantment.Rarity.COMMON, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> NIMBLE_FEET = ENCHANTMENTS.register("nimble_feet", () -> new NimbleFeetEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> QUICK_STRIKE = ENCHANTMENTS.register("quick_strike", () -> new QuickStrikeEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> STONEBREAKER = ENCHANTMENTS.register("stonebreaker", () -> new StoneBreakerEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
@@ -70,6 +70,7 @@ public class ModEnchantments {
     public static RegistryObject<Enchantment> EARTH_MOVER = ENCHANTMENTS.register("earth_mover", () -> new EarthMoverEnchantment(Enchantment.Rarity.UNCOMMON, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> BOUNTY_HUNTER = ENCHANTMENTS.register("bounty_hunter", () -> new BountyHunterEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> AERIAL_AFFINITY = ENCHANTMENTS.register("aerial_affinity", () -> new AerialAffinityEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST));
+    public static RegistryObject<Enchantment> GREEN_THUMB = ENCHANTMENTS.register("green_thumb", () -> new GreenThumbEnchantment(Enchantment.Rarity.VERY_RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
 
     public static void register(IEventBus eventBus) {
         ENCHANTMENTS.register(eventBus);

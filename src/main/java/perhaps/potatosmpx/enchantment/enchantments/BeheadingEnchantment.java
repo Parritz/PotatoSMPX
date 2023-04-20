@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 
 import java.util.Map;
 
@@ -31,20 +32,16 @@ public class BeheadingEnchantment extends Enchantment {
     }
 
     @Override
-    public int getMinCost(int level) {
-        return level * 12;
-    }
-
+    public int getMinCost(int level) { return EnchantmentRarity.EPIC.getMinCost(level); }
     @Override
-    public int getMaxCost(int level) {
-        return this.getMinCost(level) + 50;
-    }
+    public int getMaxCost(int level) { return EnchantmentRarity.EPIC.getMaxCost(level); }
 
     private final Map<EntityType<?>, Item> entityHeads = Map.of(
             EntityType.ZOMBIE, Items.ZOMBIE_HEAD,
             EntityType.SKELETON, Items.SKELETON_SKULL,
             EntityType.WITHER_SKELETON, Items.WITHER_SKELETON_SKULL,
-            EntityType.CREEPER, Items.CREEPER_HEAD
+            EntityType.CREEPER, Items.CREEPER_HEAD,
+            EntityType.PLAYER, Items.PLAYER_HEAD
     );
 
     @SubscribeEvent

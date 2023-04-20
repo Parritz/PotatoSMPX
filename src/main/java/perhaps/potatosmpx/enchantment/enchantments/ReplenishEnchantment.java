@@ -28,6 +28,8 @@ import java.util.Map;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import perhaps.potatosmpx.enchantment.EnchantmentRarity;
+import perhaps.potatosmpx.enchantment.ModEnchantments;
 
 public class ReplenishEnchantment extends Enchantment {
     public ReplenishEnchantment(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
@@ -41,14 +43,9 @@ public class ReplenishEnchantment extends Enchantment {
     }
 
     @Override
-    public int getMinCost(int level) {
-        return level * 10;
-    }
-
+    public int getMinCost(int level) { return EnchantmentRarity.COMMON.getMinCost(level); }
     @Override
-    public int getMaxCost(int level) {
-        return this.getMinCost(level) + 50;
-    }
+    public int getMaxCost(int level) { return EnchantmentRarity.COMMON.getMaxCost(level); }
 
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
@@ -58,6 +55,8 @@ public class ReplenishEnchantment extends Enchantment {
         if (heldItem.isEmpty()) return;
 
         int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
+        int bountifulHarvestLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.BOUNTIFUL_HARVEST.get(), heldItem);
+        int greenThumbLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.GREEN_THUMB.get(), heldItem);
         if (level <= 0 || world.isClientSide) return;
 
         BlockState state = event.getState();
@@ -106,6 +105,8 @@ public class ReplenishEnchantment extends Enchantment {
                     removedSeed = true;
                     itemDrop.setCount(itemDrop.getCount() - 1);
                 }
+            } else if (bountifulHarvestLevel > 0) {
+                itemDrop.setCount((int) (itemDrop.getCount() + (double) (itemDrop.getCount() * bountifulHarvestLevel)));
             }
 
             if (itemDrop.getCount() > 0) {
@@ -117,6 +118,14 @@ public class ReplenishEnchantment extends Enchantment {
         // Plant the seed back
         BlockPos pos = event.getPos();
         BlockState seedBlockState = block.defaultBlockState();
+
+        if (greenThumbLevel >= 1) {
+            int maxAge = cropBlock.getMaxAge();
+            int stageBoost = (int) (0.5 * level * maxAge);
+            int newAge = Math.min(stageBoost, maxAge - 1);
+            seedBlockState = seedBlockState.setValue(cropBlock.getAgeProperty(), newAge);
+        }
+
         world.setBlock(pos, seedBlockState, 3);
     }
 }
