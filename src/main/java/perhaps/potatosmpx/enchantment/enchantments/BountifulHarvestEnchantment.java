@@ -49,7 +49,7 @@ public class BountifulHarvestEnchantment extends Enchantment {
 
         int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
         int replenishLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.REPLENISH.get(), heldItem);
-        if (level <= 0 || world.isClientSide || EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.REPLENISH.get(), heldItem) >= 1) return;
+        if (level <= 0 || world.isClientSide || replenishLevel >= 1) return;
 
         BlockState state = event.getState();
         Block block = state.getBlock();

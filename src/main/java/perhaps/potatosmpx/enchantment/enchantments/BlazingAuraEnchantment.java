@@ -36,7 +36,7 @@ public class BlazingAuraEnchantment extends Enchantment {
         ItemStack helmet = target.getItemBySlot(EquipmentSlot.HEAD);
         int level = EnchantmentHelper.getItemEnchantmentLevel(this, helmet);
 
-        if (level > 0 && target.level.random.nextFloat() < (1f * level)) {
+        if (level > 0 && target.level.random.nextFloat() < (0.2f * level)) {
             double range = 4.0;
             target.level.getEntities(target, target.getBoundingBox().inflate(range, range, range), entity -> entity instanceof LivingEntity)
                     .forEach(entity -> {
