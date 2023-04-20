@@ -18,7 +18,13 @@ public class ModItems {
     public static final RegistryObject<Item> TITANIUM_WAND = ITEMS.register("titanium_wand", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
     public static final RegistryObject<Item> HERO_WAND = ITEMS.register("hero_wand", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
 
+    public static final RegistryObject<Item> HERO_SWORD = ITEMS.register("hero_sword", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
+    public static final RegistryObject<Item> HERO_PICKAXE = ITEMS.register("hero_pickaxe", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
     public static final RegistryObject<Item> HERO_AXE = ITEMS.register("hero_axe", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
+
+    public static final RegistryObject<Item> HERO_SHOVEL = ITEMS.register("hero_shovel", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
+
+    public static final RegistryObject<Item> HERO_HOE = ITEMS.register("hero_hoe", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
 
     public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));
     public static final RegistryObject<Item> TITANIUM_INGOT = ITEMS.register("titanium_ingot", () -> new Item(new Item.Properties().tab(ModCreativeModeTab.TAB_POTATOSMPX)));

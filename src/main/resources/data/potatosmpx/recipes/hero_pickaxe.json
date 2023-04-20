@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "SSS",
-    " M ",
-    " N "
+    "NSN",
+    " N ",
+    " M "
   ],
   "key": {
     "S": {
@@ -17,6 +17,6 @@
     }
   },
   "result": {
-    "item": "potatosmpx:hero_axe"
+    "item": "potatosmpx:hero_pickaxe"
   }
 }

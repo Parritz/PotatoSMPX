@@ -51,8 +51,20 @@
   "block.potatosmpx.mana_crystal_ore": "Mana Crystal Ore",
   "block.potatosmpx.mana_crystal_ore.desc": "A rare ore containing mana crystals.",
 
+  "item.potatosmpx.hero_sword": "Hero Sword",
+  "item.potatosmpx.hero_sword.desc": "Ultimate sword for the greatest of warriors.",
+
+  "item.potatosmpx.hero_pickaxe": "Hero Pickaxe",
+  "item.potatosmpx.hero_pickaxe.desc": "Ultimate pickaxe for the greatest of warriors.",
+
   "item.potatosmpx.hero_axe": "Hero Axe",
   "item.potatosmpx.hero_axe.desc": "Ultimate axe for the greatest of warriors.",
+
+  "item.potatosmpx.hero_shovel": "Hero Shovel",
+  "item.potatosmpx.hero_shovel.desc": "Ultimate shovel for the greatest of warriors.",
+
+  "item.potatosmpx.hero_hoe": "Hero Hoe",
+  "item.potatosmpx.hero_hoe.desc": "Ultimate hoe for the greatest of warriors.",
 
   "enchantment.potatosmpx.beheading": "Beheading",
   "enchantment.potatosmpx.beheading.desc": "5% chance per level for entity head drops.",
