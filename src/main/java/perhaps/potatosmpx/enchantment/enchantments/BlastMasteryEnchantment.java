@@ -74,8 +74,6 @@ public class BlastMasteryEnchantment extends Enchantment {
                 BlockState state = event.getState();
                 List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, event.getPos(), null, player, heldItem);
 
-                System.out.println(drops.get(0));
-                System.out.println(drops.get(0).getCount());
                 List<ItemStack> newDrops = new ArrayList<>();
 
                 for (ItemStack drop : drops) {
