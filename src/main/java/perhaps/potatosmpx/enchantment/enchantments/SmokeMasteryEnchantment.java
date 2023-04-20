@@ -1,7 +1,5 @@
 package perhaps.potatosmpx.enchantment.enchantments;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -9,8 +7,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -21,14 +17,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static net.minecraft.world.level.block.Block.getDrops;
 
 @Mod.EventBusSubscriber
 public class SmokeMasteryEnchantment extends Enchantment {
@@ -59,54 +52,44 @@ public class SmokeMasteryEnchantment extends Enchantment {
         DamageSource source = event.getSource();
         Entity attacker = source.getDirectEntity();
         Collection<ItemEntity> entityDrops = event.getDrops();
+        if (!(attacker instanceof Player player)) return;
 
-        if (attacker instanceof Player player) {
-            ItemStack heldItem = player.getMainHandItem();
+        Level world = player.level;
+        ItemStack heldItem = player.getMainHandItem();
+        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
+        if (level < 0 || world.isClientSide || heldItem.isEmpty()) return;
 
-            if (!heldItem.isEmpty()) {
-                int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-                if (level > 0) {
-                    Level world = player.level;
-                    if (!world.isClientSide) {
-                        for (ItemEntity itemEntity : entityDrops) {
-                            ItemStack drop = itemEntity.getItem();
-                            Item dropItem = drop.getItem();
+        for (ItemEntity itemEntity : entityDrops) {
+            ItemStack drop = itemEntity.getItem();
+            Item dropItem = drop.getItem();
 
-                            ItemStack result;
-                            if (recipeCache.containsKey(dropItem)) {
-                                result = recipeCache.get(dropItem);
-                            } else {
-                                SimpleContainer itemContainer = new SimpleContainer(drop);
-                                Optional<SmokingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMOKING, itemContainer, world);
+            ItemStack result;
+            if (recipeCache.containsKey(dropItem)) {
+                result = recipeCache.get(dropItem);
+            } else {
+                SimpleContainer itemContainer = new SimpleContainer(drop);
+                Optional<SmokingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMOKING, itemContainer, world);
 
-                                if (optional.isPresent()) {
-                                    SmokingRecipe smokingRecipe = optional.get();
-                                    result = smokingRecipe.getResultItem().copy();
-                                    recipeCache.put(dropItem, result);
-                                } else {
-                                    result = null;
-                                }
-                            }
-
-                            if (result != null) {
-                                ItemStack copyItem = result.copy();
-                                itemEntity.setItem(copyItem);
-
-                                ItemStack tempItem = itemEntity.getItem();
-                                int count = tempItem.getCount();
-                                if (world.getRandom().nextFloat() <= (0.05f * level)) {
-                                    int extraDupe = world.getRandom().nextFloat() <= (0.05f * level) ? 4 : 2;
-                                    if (extraDupe == 4 && (world.getRandom().nextFloat() <= 0.05f * level)) {
-                                        extraDupe = 8;
-                                    }
-
-                                    tempItem.setCount(count * extraDupe);
-                                }
-                            }
-                        }
-                    }
+                if (optional.isPresent()) {
+                    SmokingRecipe smokingRecipe = optional.get();
+                    result = smokingRecipe.getResultItem().copy();
+                    recipeCache.put(dropItem, result);
+                } else {
+                    result = null;
                 }
             }
+
+            if (result == null) return;
+            ItemStack copyItem = result.copy();
+            itemEntity.setItem(copyItem);
+
+            ItemStack tempItem = itemEntity.getItem();
+            int count = tempItem.getCount();
+            if (world.getRandom().nextFloat() > (0.05f * level)) return;
+
+            int extraDupe = world.getRandom().nextFloat() > (0.05f * level) ? 4 : 2;
+            if (extraDupe == 4 && (world.getRandom().nextFloat() > 0.05f * level)) extraDupe = 8;
+            tempItem.setCount(count * extraDupe);
         }
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -45,8 +46,8 @@ public class AutoSmeltEnchantment extends Enchantment {
         return 64;
     }
 
-    private final Map<Item, ItemStack> recipeCache = new HashMap<>();
-    private final Map<Item, ItemStack> recipeCache1 = new HashMap<>();
+    private final Map<Item, ItemStack> entityRecipeCache = new HashMap<>();
+    private final Map<Item, ItemStack> blockRecipeCache = new HashMap<>();
 
     @SubscribeEvent
     public void onLivingDrops(LivingDropsEvent event) {
@@ -54,103 +55,91 @@ public class AutoSmeltEnchantment extends Enchantment {
         Entity attacker = source.getDirectEntity();
         Collection<ItemEntity> entityDrops = event.getDrops();
 
-        if (attacker instanceof Player player) {
-            ItemStack heldItem = player.getMainHandItem();
+        if (!(attacker instanceof Player player)) return;
 
-            if (!heldItem.isEmpty()) {
-                Level world = player.level;
+        Level world = player.level;
+        ItemStack heldItem = player.getMainHandItem();
+        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
+        if (level <= 0 || heldItem.isEmpty() || world.isClientSide) return;
 
-                int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-                if (level == 0) {
-                    return;
-                }
+        for (ItemEntity itemEntity : entityDrops) {
+            ItemStack drop = itemEntity.getItem();
+            Item dropItem = drop.getItem();
 
-                if (!world.isClientSide) {
-                    for (ItemEntity itemEntity : entityDrops) {
-                        ItemStack drop = itemEntity.getItem();
-                        Item dropItem = drop.getItem();
+            ItemStack result;
+            if (entityRecipeCache.containsKey(dropItem)) {
+                result = entityRecipeCache.get(dropItem);
+            } else {
+                SimpleContainer itemContainer = new SimpleContainer(drop);
+                Optional<SmeltingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, itemContainer, world);
 
-                        ItemStack result;
-                        if (recipeCache.containsKey(dropItem)) {
-                            result = recipeCache.get(dropItem);
-                        } else {
-                            SimpleContainer itemContainer = new SimpleContainer(drop);
-                            Optional<SmeltingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, itemContainer, world);
-
-                            if (optional.isPresent()) {
-                                SmeltingRecipe furnaceRecipe = optional.get();
-                                result = furnaceRecipe.getResultItem().copy();
-                                recipeCache.put(dropItem, result);
-                            } else {
-                                result = null;
-                            }
-                        }
-
-                        if (result != null) {
-                            ItemStack copyItem = result.copy();
-                            itemEntity.setItem(copyItem);
-                        }
-                    }
+                if (optional.isPresent()) {
+                    SmeltingRecipe furnaceRecipe = optional.get();
+                    result = furnaceRecipe.getResultItem().copy();
+                    entityRecipeCache.put(dropItem, result);
+                } else {
+                    result = null;
                 }
             }
+
+            if (result == null) return;
+            ItemStack copyItem = result.copy();
+            itemEntity.setItem(copyItem);
         }
     }
 
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
+        Level world = player.level;
         ItemStack heldItem = player.getMainHandItem();
+        if (heldItem.isEmpty()) return;
 
-        if (!heldItem.isEmpty()) {
-            int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-            if (level == 0) {
-                return;
+        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
+        if (level <= 0 || world.isClientSide) return;
+
+        BlockState state = event.getState();
+        List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, event.getPos(), null, player, heldItem);
+        List<ItemStack> newDrops = new ArrayList<>();
+
+        for (ItemStack drop : drops) {
+            Item dropItem = drop.getItem();
+
+            ItemStack result;
+            if (blockRecipeCache.containsKey(dropItem)) {
+                result = blockRecipeCache.get(dropItem);
+            } else {
+                SimpleContainer itemContainer = new SimpleContainer(drop);
+                Optional<SmeltingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, itemContainer, world);
+
+                if (optional.isPresent()) {
+                    SmeltingRecipe smeltingRecipe = optional.get();
+                    result = smeltingRecipe.getResultItem().copy();
+                    blockRecipeCache.put(dropItem, result);
+                } else {
+                    result = null;
+                }
             }
 
-            Level world = player.level;
-            if (!world.isClientSide) {
-                BlockState state = event.getState();
-                List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, event.getPos(), null, player, heldItem);
-                List<ItemStack> newDrops = new ArrayList<>();
+            if (result != null) {
+                ItemStack copyItem = result.copy();
+                copyItem.setCount(drop.getCount());
 
-                for (ItemStack drop : drops) {
-                    Item dropItem = drop.getItem();
-
-                    ItemStack result;
-                    if (recipeCache1.containsKey(dropItem)) {
-                        result = recipeCache1.get(dropItem);
-                    } else {
-                        SimpleContainer itemContainer = new SimpleContainer(drop);
-                        Optional<SmeltingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, itemContainer, world);
-
-                        if (optional.isPresent()) {
-                            SmeltingRecipe smeltingRecipe = optional.get();
-                            result = smeltingRecipe.getResultItem().copy();
-                            recipeCache1.put(dropItem, result);
-                        } else {
-                            result = null;
-                        }
-                    }
-
-                    if (result != null) {
-                        ItemStack copyItem = result.copy();
-                        copyItem.setCount(drop.getCount());
-
-                        newDrops.add(copyItem);
-                    } else {
-                        newDrops.add(drop);
-                    }
-                }
-
-                //event.setExpToDrop(0); // Disable experience dropping from the original block
-                world.destroyBlock(event.getPos(), false); // Remove the original block without dropping items
-
-                // Spawn the new drops
-                for (ItemStack newDrop : newDrops) {
-                    ItemEntity itemEntity = new ItemEntity(world, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, newDrop);
-                    world.addFreshEntity(itemEntity);
-                }
+                newDrops.add(copyItem);
+            } else {
+                newDrops.add(drop);
             }
         }
+
+        world.destroyBlock(event.getPos(), false); // Remove the original block without dropping items
+        for (ItemStack newDrop : newDrops) {
+            ItemEntity itemEntity = new ItemEntity(world, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, newDrop);
+            world.addFreshEntity(itemEntity);
+        }
+
+        int xpToDrop = event.getExpToDrop();
+        if (xpToDrop <= 0) return;
+        ExperienceOrb experienceOrb = new ExperienceOrb(world, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, xpToDrop);
+        world.addFreshEntity(experienceOrb);
     }
 }
