@@ -75,6 +75,28 @@ public class onBlockBreakM {
         world.addFreshEntity(itemEntity);
     }
 
+    private static boolean isStoneBased(Block block) {
+        // Add your own criteria for determining if a block is stone-based
+        // Example: return block instanceof StoneBlock || block instanceof CobblestoneBlock;
+        return true;
+    }
+
+    private static void breakBlocksInArea(Level world, BlockPos center, Player player) {
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    BlockPos pos = center.offset(dx, dy, dz);
+                    BlockState state = world.getBlockState(pos);
+                    Block block = state.getBlock();
+
+                    if (isStoneBased(block)) {
+                        world.destroyBlock(pos, true, player);
+                    }
+                }
+            }
+        }
+    }
+
     public static void listenBlockBreak(BlockEvent.BreakEvent breakEvent) {
         Player player = breakEvent.getPlayer();
         Level playerWorld = player.level;
@@ -92,6 +114,7 @@ public class onBlockBreakM {
         int blastMasteryLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.BLAST_MASTERY.get(), heldItem);
         int farmersDelightLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FARMERS_DELIGHT.get(), heldItem);
         int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MAGNETISM.get(), heldItem);
+        int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.QUAKE.get(), heldItem);
 
         int wisdomLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.WISDOM.get(), heldItem);
         int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, heldItem);
@@ -111,7 +134,7 @@ public class onBlockBreakM {
         int blockX = (int) (pos.getX() + 0.5);
         int blockY = (int) (pos.getY() + 0.5);
         int blockZ = (int) (pos.getZ() + 0.5);
-        if (autoSmeltLevel <= 0 && blastMasteryLevel <= 0 && replenishLevel <= 0 && bountifulHarvestLevel <= 0 && farmersDelightLevel <= 0) {
+        if (autoSmeltLevel <= 0 && blastMasteryLevel <= 0 && replenishLevel <= 0 && bountifulHarvestLevel <= 0 && farmersDelightLevel <= 0 && quakeLevel <= 0) {
             if (magnetismLevel >= 1) {
                 for (ItemStack itemDrop : getDrop(state, serverWorld, breakEvent.getPos(), player, heldItem)) {
                     if (itemDrop.getCount() > 0) {
@@ -147,6 +170,10 @@ public class onBlockBreakM {
             if (farmersDelightLevel >= 1) {
                 farmersDelightEnchantment(breakEvent, farmersDelightLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
             }
+        }
+
+        if (quakeLevel >= 1) {
+            quakeEnchantment(breakEvent, quakeLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
         }
 
         breakEvent.setCanceled(true);
@@ -222,5 +249,13 @@ public class onBlockBreakM {
 
         // Add the ore to the drops
         blockDrops.add(oreStack);
+    }
+
+    private static void quakeEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
+        if (playerWorld.getRandom().nextFloat() > (0.1f * level)) return;
+
+        if (isStoneBased(block)) {
+            breakBlocksInArea(playerWorld, pos, player);
+        }
     }
 }

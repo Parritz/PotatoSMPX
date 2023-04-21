@@ -41,7 +41,7 @@ public class NimbleFeetEnchantment extends Enchantment {
         int nimbleFeetLevel = EnchantmentHelper.getItemEnchantmentLevel(this, boots);
 
         if (nimbleFeetLevel > 0) {
-            double movementSpeedBonus = 2.5 * nimbleFeetLevel;
+            double movementSpeedBonus = 0.05f * nimbleFeetLevel;
 
             if (player.getAttribute(Attributes.MOVEMENT_SPEED).getModifier(NIMBLE_FEET_MOVEMENT_SPEED_MODIFIER) == null) {
                 player.getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(

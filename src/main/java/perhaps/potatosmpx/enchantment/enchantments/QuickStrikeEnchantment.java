@@ -41,7 +41,7 @@ public class QuickStrikeEnchantment extends Enchantment {
         int quickStrikeLevel = EnchantmentHelper.getItemEnchantmentLevel(this, mainHandItem);
 
         if (quickStrikeLevel > 0) {
-            double attackSpeedBonus = 0.05 * quickStrikeLevel;
+            double attackSpeedBonus = 0.1f * quickStrikeLevel;
 
             if (player.getAttribute(Attributes.ATTACK_SPEED).getModifier(QUICK_STRIKE_ATTACK_SPEED_MODIFIER) == null) {
                 player.getAttribute(Attributes.ATTACK_SPEED).addPermanentModifier(

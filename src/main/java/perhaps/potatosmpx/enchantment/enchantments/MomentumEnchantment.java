@@ -40,7 +40,7 @@ public class MomentumEnchantment extends Enchantment {
         if (momentumLevel > 0) {
             int minedBlocks = player.getPersistentData().getInt(MOMENTUM_TAG);
             float miningSpeedBonus = 0.05f * momentumLevel * Math.min(minedBlocks, MAX_CONSECUTIVE_BLOCKS);
-            event.setNewSpeed(event.getNewSpeed() * (1 + miningSpeedBonus));
+            event.setNewSpeed(event.getNewSpeed() * (2 + miningSpeedBonus));
         }
     }
 
