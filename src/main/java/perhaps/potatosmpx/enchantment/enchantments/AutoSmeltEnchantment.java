@@ -26,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 import perhaps.potatosmpx.enchantment.EnchantmentUtils;
 import perhaps.potatosmpx.enchantment.ModEnchantments;
+import perhaps.potatosmpx.enchantment.custom.onBlockBreakM;
 
 import java.util.*;
 
@@ -94,56 +95,6 @@ public class AutoSmeltEnchantment extends Enchantment {
 
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        Player player = event.getPlayer();
-        Level world = player.level;
-        ItemStack heldItem = player.getMainHandItem();
-        if (heldItem.isEmpty()) return;
-
-        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-        if (level <= 0 || world.isClientSide) return;
-
-        BlockState state = event.getState();
-        List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, event.getPos(), null, player, heldItem);
-        List<ItemStack> newDrops = new ArrayList<>();
-
-        for (ItemStack drop : drops) {
-            Item dropItem = drop.getItem();
-
-            ItemStack result;
-            if (blockRecipeCache.containsKey(dropItem)) {
-                result = blockRecipeCache.get(dropItem);
-            } else {
-                SimpleContainer itemContainer = new SimpleContainer(drop);
-                Optional<SmeltingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, itemContainer, world);
-
-                if (optional.isPresent()) {
-                    SmeltingRecipe smeltingRecipe = optional.get();
-                    result = smeltingRecipe.getResultItem().copy();
-                    blockRecipeCache.put(dropItem, result);
-                } else {
-                    result = null;
-                }
-            }
-
-            if (result != null) {
-                ItemStack copyItem = result.copy();
-                copyItem.setCount(drop.getCount());
-
-                newDrops.add(copyItem);
-            } else {
-                newDrops.add(drop);
-            }
-        }
-
-        world.destroyBlock(event.getPos(), false); // Remove the original block without dropping items
-        for (ItemStack newDrop : newDrops) {
-            ItemEntity itemEntity = new ItemEntity(world, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, newDrop);
-            world.addFreshEntity(itemEntity);
-        }
-
-        int xpToDrop = event.getExpToDrop();
-        if (xpToDrop <= 0) return;
-        ExperienceOrb experienceOrb = new ExperienceOrb(world, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, xpToDrop);
-        world.addFreshEntity(experienceOrb);
+        onBlockBreakM.listenBlockBreak(event);
     }
 }

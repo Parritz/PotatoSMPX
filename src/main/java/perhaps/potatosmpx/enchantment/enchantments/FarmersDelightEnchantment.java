@@ -55,46 +55,4 @@ public class FarmersDelightEnchantment extends Enchantment {
             Items.EMERALD, 0.08,
             Items.NETHERITE_SCRAP, 0.06
     );
-
-    @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
-        Player player = event.getPlayer();
-        Level world = player.level;
-        ItemStack heldItem = player.getMainHandItem();
-        if (heldItem.isEmpty()) return;
-
-        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-        if (level <= 0 || world.isClientSide) return;
-
-        BlockState state = event.getState();
-        Block block = state.getBlock();
-
-        // Check if the block is a CropBlock and fully grown
-        if (!(block instanceof CropBlock cropBlock) || !cropBlock.isMaxAge(state)) return;
-
-        if (world.getRandom().nextFloat() > (0.05f * level)) return;
-
-        Item selectedItem = null;
-        double randomValue = world.getRandom().nextDouble();
-
-        for (Map.Entry<Item, Double> entry : rareDrops.entrySet()) {
-            if (randomValue < entry.getValue()) {
-                selectedItem = entry.getKey();
-                break;
-            }
-            randomValue -= entry.getValue();
-        }
-
-        // Create an ItemStack with the random ore
-        ItemStack oreStack = new ItemStack(selectedItem);
-        oreStack.setCount(1);
-
-        // Spawn the ore as an item entity in the world
-        BlockPos pos = event.getPos();
-        double posX = pos.getX() + 0.5;
-        double posY = pos.getY() + 0.5;
-        double posZ = pos.getZ() + 0.5;
-        ItemEntity oreEntity = new ItemEntity(world, posX, posY, posZ, oreStack);
-        world.addFreshEntity(oreEntity);
-    }
 }
