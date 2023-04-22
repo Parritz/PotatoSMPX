@@ -1,7 +1,17 @@
+buildscript {
+    repositories {
+        maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
+    }
+    dependencies {
+        classpath 'org.spongepowered:mixingradle:0.7.+'
+    }
+}
+
 plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
+apply plugin: 'org.spongepowered.mixin'
 
 group = 'perhaps'
 version = '1.0-SNAPSHOT'
@@ -116,32 +126,29 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
-    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.18.2-40.2.1'
+    implementation fg.deobf("curse.maven:saturn-670986:4500237")
 
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
+    implementation fg.deobf("curse.maven:starlight-526854:3706539")
+    implementation fg.deobf("curse.maven:fastsuite-475117:3755834")
+    implementation fg.deobf("curse.maven:pluto-682881:4469705")
+    implementation fg.deobf("curse.maven:canary-665658:4498539")
+    implementation fg.deobf("curse.maven:smoothboot-633412:4162938")
+    implementation fg.deobf("curse.maven:placebo-283644:4500363")
 
-    // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    implementation fg.deobf("curse.maven:jei-238222:4352925")
+    implementation fg.deobf("curse.maven:jeiintegrations-265917:3812175")
+    implementation fg.deobf("curse.maven:enchantmentdescriptions-250419:4102073")
+    implementation fg.deobf("curse.maven:bookshelf-228525:4449847")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -163,4 +170,9 @@ jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+// Configure Mixin Gradle
+mixin {
+    add sourceSets.main, 'mixins.potatosmpx.json'
 }

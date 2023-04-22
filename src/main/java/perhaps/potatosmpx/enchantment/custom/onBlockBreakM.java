@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
+import perhaps.potatosmpx.api.registry.PlayerSkillBase;
 import perhaps.potatosmpx.enchantment.ModEnchantments;
 
 import java.util.*;
@@ -57,13 +58,13 @@ public class onBlockBreakM {
 
     private static final Map<Item, Double> rareDrops = Map.of(
             Items.COAL, 0.25,
-            Items.IRON_INGOT, 0.3,
-            Items.GOLD_INGOT, 0.25,
-            Items.REDSTONE, 0.2,
+            Items.IRON_INGOT, 0.25,
+            Items.GOLD_INGOT, 0.15,
+            Items.REDSTONE, 0.15,
             Items.LAPIS_LAZULI, 0.15,
             Items.DIAMOND, 0.1,
             Items.EMERALD, 0.08,
-            Items.NETHERITE_SCRAP, 0.06
+            Items.NETHERITE_SCRAP, 0.02
     );
 
     public static boolean isSeed(Item item) {
@@ -230,22 +231,27 @@ public class onBlockBreakM {
     private static void farmersDelightEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
         List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
 
-        if (playerWorld.getRandom().nextFloat() > (0.05f * level)) return;
+        float runChance = 0.05f * level * (PlayerSkillBase.getLuck(player) / 100.0f);
+        if (playerWorld.getRandom().nextFloat() > 0.999999) return;
 
-        Item selectedItem = null;
         double randomValue = playerWorld.getRandom().nextDouble();
+        double totalWeight = rareDrops.values().stream().mapToDouble(Double::doubleValue).sum();
+        Item selectedItem = null;
 
         for (Map.Entry<Item, Double> entry : rareDrops.entrySet()) {
-            if (randomValue < entry.getValue()) {
+            double baseDropRate = entry.getValue();
+            double adjustedDropRate = PlayerSkillBase.getAdjustedDropRate(player, baseDropRate) * totalWeight;
+            if (randomValue < adjustedDropRate / totalWeight) {
                 selectedItem = entry.getKey();
                 break;
             }
-            randomValue -= entry.getValue();
+            randomValue -= adjustedDropRate / totalWeight;
         }
 
         // Create an ItemStack with the random ore
         ItemStack oreStack = new ItemStack(selectedItem);
         oreStack.setCount(1);
+        System.out.println(oreStack.getItem());
 
         // Add the ore to the drops
         blockDrops.add(oreStack);
