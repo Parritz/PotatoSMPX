@@ -9,6 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import perhaps.potatosmpx.block.ModBlocks;
+import perhaps.potatosmpx.client.KeyInit;
 import perhaps.potatosmpx.enchantment.ModEnchantments;
 import perhaps.potatosmpx.item.ModItems;
 
@@ -23,6 +24,7 @@ public class Potatosmpx {
         ModItems.register(eventBus);
         ModBlocks.register(eventBus);
         ModEnchantments.register(eventBus);
+        KeyInit.init();
 
         eventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
