@@ -49,20 +49,4 @@ public class AerialAffinityEnchantment extends Enchantment {
 
     private static final float BASE_FLIGHT_SPEED = 0.05f;
     private static final float SPEED_BOOST_PER_LEVEL = 0.02f;
-
-    @SubscribeEvent
-    public void onLivingAttack(LivingAttackEvent event) {
-        Entity source = event.getSource().getDirectEntity();
-        if (source instanceof LivingEntity attacker) { // Check if the attacker is a living entity
-            if (EnchantmentHelper.getEnchantmentLevel(this, attacker) > 0) { // Check if the attacker's weapon is enchanted with Venomous Strike
-                if (event.getEntityLiving() != null) { // Check if the damaged entity is a living entity
-                    LivingEntity target = (LivingEntity) event.getEntityLiving();
-                    int level = EnchantmentHelper.getEnchantmentLevel(this, attacker);
-                    int duration = level * 20; // Duration of poison effect in ticks
-                    int damage = level * 2; // Amount of damage per tick
-                    target.addEffect(new MobEffectInstance(MobEffects.POISON, duration, damage));
-                }
-            }
-        }
-    }
 }
