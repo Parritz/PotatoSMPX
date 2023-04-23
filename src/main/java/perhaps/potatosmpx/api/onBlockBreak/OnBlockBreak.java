@@ -60,7 +60,7 @@ public class OnBlockBreak {
             Items.MELON_SEEDS
     );
 
-    private static final Map<Item, Double> rareDrops = Map.of(
+    public static final Map<Item, Double> rareDrops = Map.of(
             Items.COAL, 0.2,
             Items.IRON_INGOT, 0.2,
             Items.GOLD_INGOT, 0.15,
@@ -71,7 +71,7 @@ public class OnBlockBreak {
             Items.NETHERITE_SCRAP, 0.02
     );
 
-    private static final Map<Integer, Double> cropDrops = Map.of(
+    public static final Map<Integer, Double> cropDrops = Map.of(
             1, 0.4,
             2, 0.4,
             3, 0.1,

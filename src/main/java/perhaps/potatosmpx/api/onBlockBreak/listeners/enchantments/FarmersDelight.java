@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.registry.PlayerSkillBase;
+import perhaps.potatosmpx.util.LuckHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -21,29 +22,18 @@ public class FarmersDelight {
 	public static void farmersDelightEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
 		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
 
-		float runChance = 0.05f * level * (PlayerSkillBase.getLuck(player) / 100.0f);
-		if (playerWorld.getRandom().nextFloat() > 0.999999) return;
+		if (!PlayerSkillBase.willRunEnchantment(player, 0.05f, level)) return;
+		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
 
-		double randomValue = playerWorld.getRandom().nextDouble();
-		double totalWeight = rareDrops.values().stream().mapToDouble(Double::doubleValue).sum();
-		Item selectedItem = null;
+		Map<Item, Double> adjustedDrops = LuckHandler.getAdjustedWeights(rareDrops, playerLuck);
+		double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
 
-		for (Map.Entry<Item, Double> entry : rareDrops.entrySet()) {
-			double baseDropRate = entry.getValue();
-			double adjustedDropRate = PlayerSkillBase.getAdjustedDropRate(player, baseDropRate) * totalWeight;
-			if (randomValue < adjustedDropRate / totalWeight) {
-				selectedItem = entry.getKey();
-				break;
-			}
-			randomValue -= adjustedDropRate / totalWeight;
-		}
+		Item selectedItem = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
+		if (selectedItem == null) return;
 
-		// Create an ItemStack with the random ore
 		ItemStack oreStack = new ItemStack(selectedItem);
 		oreStack.setCount(1);
-		System.out.println(oreStack.getItem());
 
-		// Add the ore to the drops
 		blockDrops.add(oreStack);
 	}
 }

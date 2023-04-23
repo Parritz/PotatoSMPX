@@ -13,16 +13,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
-import java.util.List;
-
 import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.changeState;
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
 
 public class Replenish {
 	public static void replenishEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
 		int greenThumbLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.GREEN_THUMB.get(), heldItem);
-
-		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
 
 		NetherWartBlock netherWartBlock = block instanceof NetherWartBlock ? (NetherWartBlock) block : null;
 		CropBlock cropBlock = block instanceof CropBlock ? (CropBlock) block : null;

@@ -19,10 +19,21 @@ public class BountifulHarvest {
 	public static void bountifulHarvestEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
 		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
 
+		// Obtain the player's luck
+		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
+
+		Map<Integer, Double> adjustedDrops = LuckHandler.getAdjustedWeights(cropDrops, playerLuck);
+		double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
+
 		for (ItemStack drop : blockDrops) {
 			if (drop.getItem() != Items.NETHER_WART && isSeed(drop.getItem())) { continue; } // Skip any seeds
-			int additionalCount = (drop.getCount() * level);
-			drop.setCount(drop.getCount() + additionalCount);
+
+			int currentCount = drop.getCount();
+			int getResult = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
+			if (getResult == 0) continue;
+
+			int additionalCount = getResult + level - currentCount;
+			drop.setCount(currentCount + additionalCount);
 		}
 	}
 }
