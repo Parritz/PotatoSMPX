@@ -1,4 +1,4 @@
-package perhaps.potatosmpx.enchantment.custom;
+package perhaps.potatosmpx.api.onBlockBreak;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -13,33 +13,36 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
-import perhaps.potatosmpx.api.registry.PlayerSkillBase;
-import perhaps.potatosmpx.enchantment.ModEnchantments;
-import perhaps.potatosmpx.util.LuckHandler;
+import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.*;
 
-public class onBlockBreakM {
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.BountifulHarvest.bountifulHarvestEnchantment;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.FarmersDelight.farmersDelightEnchantment;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.quakeEnchantment;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Replenish.replenishEnchantment;
+
+public class OnBlockBreak {
     private static final Map<BlockState, List<ItemStack>> blockMap = new HashMap<>();
     private static final Map<BlockState, BlockState> blockStateMap = new HashMap<>();
 
-    private static void changeState(BlockState state, BlockState newState) {
+    public static void changeState(BlockState state, BlockState newState) {
         blockStateMap.put(state, newState);
     }
 
-    private static void removeState(BlockState state) {
+    public static void removeState(BlockState state) {
         blockStateMap.remove(state);
     }
 
-    private static void createDrop(BlockState state, List<ItemStack> drops) {
+    public static void createDrop(BlockState state, List<ItemStack> drops) {
         blockMap.put(state, drops);
     }
 
-    private static void removeDrop(BlockState state) {
+    public static void removeDrop(BlockState state) {
         blockMap.remove(state);
     }
 
-    private static List<ItemStack> getDrop(BlockState state, ServerLevel world, BlockPos pos, Player player, ItemStack heldItem) {
+    public static List<ItemStack> getDrop(BlockState state, ServerLevel world, BlockPos pos, Player player, ItemStack heldItem) {
         if (blockMap.containsKey(state)) return blockMap.get(state);
 
         List<ItemStack> tempDrops = Block.getDrops(state, world, pos, null, player, heldItem);
@@ -48,7 +51,7 @@ public class onBlockBreakM {
         return tempDrops;
     }
 
-    private static final List<Item> cropSeeds = Arrays.asList(
+    public static final List<Item> cropSeeds = Arrays.asList(
             Items.WHEAT_SEEDS,
             Items.CARROT,
             Items.POTATO,
@@ -87,13 +90,13 @@ public class onBlockBreakM {
         world.addFreshEntity(itemEntity);
     }
 
-    private static boolean isStoneBased(Block block) {
+    public static boolean isStoneBased(Block block) {
         // Add your own criteria for determining if a block is stone-based
         // Example: return block instanceof StoneBlock || block instanceof CobblestoneBlock;
         return true;
     }
 
-    private static void breakBlocksInArea(Level world, BlockPos center, Player player, List<ItemStack> blockDrops) {
+    public static void breakBlocksInArea(Level world, BlockPos center, Player player, List<ItemStack> blockDrops) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 for (int dz = -1; dz <= 1; dz++) {
@@ -109,6 +112,7 @@ public class onBlockBreakM {
         }
     }
 
+    // TODO: Going to clean this up later
     public static void listenBlockBreak(BlockEvent.BreakEvent breakEvent) {
         Player player = breakEvent.getPlayer();
         Level playerWorld = player.level;
@@ -120,15 +124,15 @@ public class onBlockBreakM {
         Block block = state.getBlock();
         BlockPos pos = breakEvent.getPos();
 
-        int replenishLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.REPLENISH.get(), heldItem);
-        int bountifulHarvestLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.BOUNTIFUL_HARVEST.get(), heldItem);
-        int autoSmeltLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.AUTO_SMELT.get(), heldItem);
-        int blastMasteryLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.BLAST_MASTERY.get(), heldItem);
-        int farmersDelightLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FARMERS_DELIGHT.get(), heldItem);
-        int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MAGNETISM.get(), heldItem);
-        int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.QUAKE.get(), heldItem);
+        int replenishLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.REPLENISH.get(), heldItem);
+        int bountifulHarvestLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.BOUNTIFUL_HARVEST.get(), heldItem);
+        int autoSmeltLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.AUTO_SMELT.get(), heldItem);
+        int blastMasteryLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.BLAST_MASTERY.get(), heldItem);
+        int farmersDelightLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.FARMERS_DELIGHT.get(), heldItem);
+        int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem);
+        int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.QUAKE.get(), heldItem);
 
-        int wisdomLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.WISDOM.get(), heldItem);
+        int wisdomLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.WISDOM.get(), heldItem);
         int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, heldItem);
         int silkTouchLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, heldItem);
 
@@ -167,12 +171,11 @@ public class onBlockBreakM {
             boolean isMaxAge = netherWartBlock != null ? currentAge == NetherWartBlock.MAX_AGE : cropBlock.isMaxAge(state);
 
             if (replenishLevel >= 1) {
-                if (isMaxAge) {
-                    replenishEnchantment(breakEvent, replenishLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-                } else {
+                if (!isMaxAge) {
                     breakEvent.setCanceled(true);
                     return;
                 }
+                replenishEnchantment(breakEvent, replenishLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
             }
 
             if (bountifulHarvestLevel >= 1) {
@@ -206,71 +209,5 @@ public class onBlockBreakM {
 
         if (blockStateMap.containsKey(state)) removeDrop(state);
         if (blockMap.containsKey(state)) removeState(state);
-    }
-
-    private static void replenishEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-        int greenThumbLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.GREEN_THUMB.get(), heldItem);
-
-        NetherWartBlock netherWartBlock = block instanceof NetherWartBlock ? (NetherWartBlock) block : null;
-        CropBlock cropBlock = block instanceof CropBlock ? (CropBlock) block : null;
-
-        BlockState seedBlockState = block.defaultBlockState();
-        if (greenThumbLevel >= 1) {
-            int maxAge = netherWartBlock != null ? NetherWartBlock.MAX_AGE : cropBlock != null ? cropBlock.getMaxAge() : 0;
-            int stageBoost = (int) (0.5 * greenThumbLevel * maxAge);
-            int newAge = Math.min(stageBoost, maxAge - 1);
-            if (maxAge > 0) {
-                seedBlockState = seedBlockState.setValue(netherWartBlock != null ? NetherWartBlock.AGE : cropBlock.getAgeProperty(), newAge);
-            }
-        }
-
-        changeState(state, seedBlockState);
-    }
-
-    private static void bountifulHarvestEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-        List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
-
-        // Obtain the player's luck
-        double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
-
-        Map<Integer, Double> adjustedDrops = LuckHandler.getAdjustedWeights(cropDrops, playerLuck);
-        double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
-
-        for (ItemStack drop : blockDrops) {
-            if (drop.getItem() != Items.NETHER_WART && isSeed(drop.getItem())) { continue; } // Skip any seeds
-
-            int currentCount = drop.getCount();
-            int getResult = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
-            if (getResult == 0) continue;
-
-            int additionalCount = getResult + level - currentCount;
-            drop.setCount(currentCount + additionalCount);
-        }
-    }
-
-    private static void farmersDelightEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-        List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
-
-        if (!PlayerSkillBase.willRunEnchantment(player, 0.05f, level)) return;
-        double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
-
-        Map<Item, Double> adjustedDrops = LuckHandler.getAdjustedWeights(rareDrops, playerLuck);
-        double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
-
-        Item selectedItem = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
-        if (selectedItem == null) return;
-
-        ItemStack oreStack = new ItemStack(selectedItem);
-        oreStack.setCount(1);
-
-        blockDrops.add(oreStack);
-    }
-
-    private static void quakeEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-        if (!PlayerSkillBase.willRunEnchantment(player, 0.1f, level)) return;
-
-        if (isStoneBased(block)) {
-            breakBlocksInArea(playerWorld, pos, player, getDrop(state, serverWorld, pos, player, heldItem));
-        }
     }
 }
