@@ -9,12 +9,13 @@ import java.util.Random;
 
 public enum PlayerSkillBase {;
     public static int getLuck(Player player) {
-        return 100;
+        return 500;
     }
 
-    public static double getAdjustedDropRate(Player player, double baseDropRate) {
-        double luck = getLuck(player) / 100.0;
-        double adjustedDropRate = baseDropRate * (1.0 + luck);
-        return Math.min(adjustedDropRate, 1.0);
+    public static boolean willRunEnchantment(Player player, float baseChance, int currentLevel) {
+        float runChance = baseChance * currentLevel * (getLuck(player) / 100.0f);
+
+        Random random = new Random();
+        return random.nextFloat() <= runChance;
     }
 }

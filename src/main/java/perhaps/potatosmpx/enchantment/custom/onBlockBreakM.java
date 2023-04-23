@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.registry.PlayerSkillBase;
 import perhaps.potatosmpx.enchantment.ModEnchantments;
+import perhaps.potatosmpx.util.LuckHandler;
 
 import java.util.*;
 
@@ -57,14 +58,24 @@ public class onBlockBreakM {
     );
 
     private static final Map<Item, Double> rareDrops = Map.of(
-            Items.COAL, 0.25,
-            Items.IRON_INGOT, 0.25,
+            Items.COAL, 0.2,
+            Items.IRON_INGOT, 0.2,
             Items.GOLD_INGOT, 0.15,
-            Items.REDSTONE, 0.15,
-            Items.LAPIS_LAZULI, 0.15,
+            Items.REDSTONE, 0.13,
+            Items.LAPIS_LAZULI, 0.12,
             Items.DIAMOND, 0.1,
             Items.EMERALD, 0.08,
             Items.NETHERITE_SCRAP, 0.02
+    );
+
+    private static final Map<Integer, Double> cropDrops = Map.of(
+            1, 0.4,
+            2, 0.4,
+            3, 0.1,
+            4, 0.05,
+            5, 0.03,
+            6, 0.015,
+            7, 0.005
     );
 
     public static boolean isSeed(Item item) {
@@ -82,7 +93,7 @@ public class onBlockBreakM {
         return true;
     }
 
-    private static void breakBlocksInArea(Level world, BlockPos center, Player player) {
+    private static void breakBlocksInArea(Level world, BlockPos center, Player player, List<ItemStack> blockDrops) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 for (int dz = -1; dz <= 1; dz++) {
@@ -91,7 +102,7 @@ public class onBlockBreakM {
                     Block block = state.getBlock();
 
                     if (isStoneBased(block)) {
-                        world.destroyBlock(pos, true, player);
+
                     }
                 }
             }
@@ -200,8 +211,6 @@ public class onBlockBreakM {
     private static void replenishEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
         int greenThumbLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.GREEN_THUMB.get(), heldItem);
 
-        List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
-
         NetherWartBlock netherWartBlock = block instanceof NetherWartBlock ? (NetherWartBlock) block : null;
         CropBlock cropBlock = block instanceof CropBlock ? (CropBlock) block : null;
 
@@ -221,47 +230,47 @@ public class onBlockBreakM {
     private static void bountifulHarvestEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
         List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
 
+        // Obtain the player's luck
+        double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
+
+        Map<Integer, Double> adjustedDrops = LuckHandler.getAdjustedWeights(cropDrops, playerLuck);
+        double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
+
         for (ItemStack drop : blockDrops) {
             if (drop.getItem() != Items.NETHER_WART && isSeed(drop.getItem())) { continue; } // Skip any seeds
-            int additionalCount = (drop.getCount() * level);
-            drop.setCount(drop.getCount() + additionalCount);
+
+            int currentCount = drop.getCount();
+            int getResult = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
+            if (getResult == 0) continue;
+
+            int additionalCount = getResult + level - currentCount;
+            drop.setCount(currentCount + additionalCount);
         }
     }
 
     private static void farmersDelightEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
         List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
 
-        float runChance = 0.05f * level * (PlayerSkillBase.getLuck(player) / 100.0f);
-        if (playerWorld.getRandom().nextFloat() > 0.999999) return;
+        if (!PlayerSkillBase.willRunEnchantment(player, 0.05f, level)) return;
+        double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
 
-        double randomValue = playerWorld.getRandom().nextDouble();
-        double totalWeight = rareDrops.values().stream().mapToDouble(Double::doubleValue).sum();
-        Item selectedItem = null;
+        Map<Item, Double> adjustedDrops = LuckHandler.getAdjustedWeights(rareDrops, playerLuck);
+        double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
 
-        for (Map.Entry<Item, Double> entry : rareDrops.entrySet()) {
-            double baseDropRate = entry.getValue();
-            double adjustedDropRate = PlayerSkillBase.getAdjustedDropRate(player, baseDropRate) * totalWeight;
-            if (randomValue < adjustedDropRate / totalWeight) {
-                selectedItem = entry.getKey();
-                break;
-            }
-            randomValue -= adjustedDropRate / totalWeight;
-        }
+        Item selectedItem = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
+        if (selectedItem == null) return;
 
-        // Create an ItemStack with the random ore
         ItemStack oreStack = new ItemStack(selectedItem);
         oreStack.setCount(1);
-        System.out.println(oreStack.getItem());
 
-        // Add the ore to the drops
         blockDrops.add(oreStack);
     }
 
     private static void quakeEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-        if (playerWorld.getRandom().nextFloat() > (0.1f * level)) return;
+        if (!PlayerSkillBase.willRunEnchantment(player, 0.1f, level)) return;
 
         if (isStoneBased(block)) {
-            breakBlocksInArea(playerWorld, pos, player);
+            breakBlocksInArea(playerWorld, pos, player, getDrop(state, serverWorld, pos, player, heldItem));
         }
     }
 }

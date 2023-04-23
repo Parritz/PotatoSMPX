@@ -149,6 +149,9 @@ dependencies {
     implementation fg.deobf("curse.maven:jeiintegrations-265917:3812175")
     implementation fg.deobf("curse.maven:enchantmentdescriptions-250419:4102073")
     implementation fg.deobf("curse.maven:bookshelf-228525:4449847")
+
+    implementation fg.deobf("curse.maven:colytra-280200:4087911")
+    implementation fg.deobf("curse.maven:caelus-308989:3650485")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
