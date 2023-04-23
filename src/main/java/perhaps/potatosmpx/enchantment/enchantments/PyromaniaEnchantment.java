@@ -8,10 +8,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 import perhaps.potatosmpx.enchantment.EnchantmentUtils;
-import perhaps.potatosmpx.enchantment.ModEnchantments;
 
 public class PyromaniaEnchantment extends Enchantment {
     public PyromaniaEnchantment(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {

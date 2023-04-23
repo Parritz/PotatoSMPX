@@ -1,4 +1,4 @@
-package perhaps.potatosmpx.enchantment;
+package perhaps.potatosmpx.api.registry;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 import perhaps.potatosmpx.Potatosmpx;
 import perhaps.potatosmpx.enchantment.enchantments.*;
 
-public class ModEnchantments {
+public class EnchantmentBase {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Potatosmpx.MOD_ID);
 
     public static RegistryObject<Enchantment> BLAST_MASTERY = ENCHANTMENTS.register("blast_mastery", () -> new BlastMasteryEnchantment(Enchantment.Rarity.VERY_RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));

@@ -1,7 +1,6 @@
 package perhaps.potatosmpx;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -10,8 +9,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import perhaps.potatosmpx.block.ModBlocks;
 import perhaps.potatosmpx.client.KeyInit;
-import perhaps.potatosmpx.enchantment.ModEnchantments;
+import perhaps.potatosmpx.api.registry.EnchantmentBase;
 import perhaps.potatosmpx.item.ModItems;
+import perhaps.potatosmpx.perks.MinersInstinct;
 
 @Mod(Potatosmpx.MOD_ID)
 public class Potatosmpx {
@@ -23,7 +23,7 @@ public class Potatosmpx {
 
         ModItems.register(eventBus);
         ModBlocks.register(eventBus);
-        ModEnchantments.register(eventBus);
+        EnchantmentBase.register(eventBus);
         KeyInit.init();
 
         eventBus.addListener(this::setup);

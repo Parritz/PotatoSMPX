@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public enum PlayerSkillBase {;
+public class PlayerSkillBase {
     public static int getLuck(Player player) {
         return 100;
     }

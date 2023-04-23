@@ -1,11 +1,9 @@
 package perhaps.potatosmpx.enchantment.enchantments;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -17,16 +15,15 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.NotNull;
 import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 import perhaps.potatosmpx.enchantment.EnchantmentUtils;
-import perhaps.potatosmpx.enchantment.ModEnchantments;
-import perhaps.potatosmpx.enchantment.custom.onBlockBreakM;
+import perhaps.potatosmpx.api.registry.EnchantmentBase;
+import perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak;
 
 import java.util.*;
 
@@ -47,8 +44,8 @@ public class AutoSmeltEnchantment extends Enchantment {
     public int getMaxCost(int level) { return EnchantmentRarity.RARE.getMaxCost(level); }
 
     @Override
-    protected boolean checkCompatibility(Enchantment other) {
-        return super.checkCompatibility(other) && EnchantmentUtils.isEnchantmentAllowed(other, Enchantments.SILK_TOUCH, ModEnchantments.SMOKE_MASTERY.get(), ModEnchantments.BLAST_MASTERY.get());
+    protected boolean checkCompatibility(@NotNull Enchantment other) {
+        return super.checkCompatibility(other) && EnchantmentUtils.isEnchantmentAllowed(other, Enchantments.SILK_TOUCH, EnchantmentBase.SMOKE_MASTERY.get(), EnchantmentBase.BLAST_MASTERY.get());
     }
 
     private final Map<Item, ItemStack> entityRecipeCache = new HashMap<>();
@@ -95,6 +92,6 @@ public class AutoSmeltEnchantment extends Enchantment {
 
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        onBlockBreakM.listenBlockBreak(event);
+        OnBlockBreak.listenBlockBreak(event);
     }
 }

@@ -10,7 +10,7 @@ import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 import perhaps.potatosmpx.enchantment.EnchantmentUtils;
-import perhaps.potatosmpx.enchantment.ModEnchantments;
+import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.*;
 
@@ -34,6 +34,6 @@ public class BlastMasteryEnchantment extends Enchantment {
 
     @Override
     protected boolean checkCompatibility(@NotNull Enchantment other) {
-        return super.checkCompatibility(other) && EnchantmentUtils.isEnchantmentAllowed(other, Enchantments.SILK_TOUCH, ModEnchantments.AUTO_SMELT.get(), ModEnchantments.SMOKE_MASTERY.get());
+        return super.checkCompatibility(other) && EnchantmentUtils.isEnchantmentAllowed(other, Enchantments.SILK_TOUCH, EnchantmentBase.AUTO_SMELT.get(), EnchantmentBase.SMOKE_MASTERY.get());
     }
 }
