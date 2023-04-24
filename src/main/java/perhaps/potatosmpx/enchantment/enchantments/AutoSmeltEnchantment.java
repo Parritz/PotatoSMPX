@@ -17,9 +17,11 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
+import perhaps.potatosmpx.api.onBreakSpeed.OnBreakSpeed;
 import perhaps.potatosmpx.enchantment.EnchantmentRarity;
 import perhaps.potatosmpx.enchantment.EnchantmentUtils;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
@@ -93,5 +95,10 @@ public class AutoSmeltEnchantment extends Enchantment {
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         OnBlockBreak.listenBlockBreak(event);
+    }
+
+    @SubscribeEvent
+    public void onBlockSpeed(PlayerEvent.BreakSpeed event) {
+        OnBreakSpeed.listenBreakSpeed(event);
     }
 }

@@ -9,20 +9,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
+import perhaps.potatosmpx.api.config.WeightedItems;
+import perhaps.potatosmpx.api.registry.PlayerSkillBase;
+import perhaps.potatosmpx.api.config.LuckHandler;
 
 import java.util.List;
+import java.util.Map;
 
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.isSeed;
+import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.*;
 
 public class BountifulHarvest {
 	public static void bountifulHarvestEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
+		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
 
 		// Obtain the player's luck
 		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
 
-		Map<Integer, Double> adjustedDrops = LuckHandler.getAdjustedWeights(cropDrops, playerLuck);
+		Map<Integer, Double> adjustedDrops = LuckHandler.getAdjustedWeights(WeightedItems.cropDrops, playerLuck);
 		double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
 
 		for (ItemStack drop : blockDrops) {

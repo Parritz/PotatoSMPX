@@ -11,7 +11,6 @@ import perhaps.potatosmpx.block.ModBlocks;
 import perhaps.potatosmpx.client.KeyInit;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 import perhaps.potatosmpx.item.ModItems;
-import perhaps.potatosmpx.perks.MinersInstinct;
 
 @Mod(Potatosmpx.MOD_ID)
 public class Potatosmpx {

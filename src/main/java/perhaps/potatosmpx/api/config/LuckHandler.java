@@ -1,4 +1,4 @@
-package perhaps.potatosmpx.util;
+package perhaps.potatosmpx.api.config;
 
 import net.minecraft.world.level.Level;
 

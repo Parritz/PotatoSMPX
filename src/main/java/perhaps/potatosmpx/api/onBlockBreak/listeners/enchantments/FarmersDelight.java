@@ -9,23 +9,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
+import perhaps.potatosmpx.api.config.WeightedItems;
 import perhaps.potatosmpx.api.registry.PlayerSkillBase;
-import perhaps.potatosmpx.util.LuckHandler;
+import perhaps.potatosmpx.api.config.LuckHandler;
 
 import java.util.List;
 import java.util.Map;
 
 import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.rareDrops;
 
 public class FarmersDelight {
 	public static void farmersDelightEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
-		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem);
+		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
 
 		if (!PlayerSkillBase.willRunEnchantment(player, 0.05f, level)) return;
 		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
 
-		Map<Item, Double> adjustedDrops = LuckHandler.getAdjustedWeights(rareDrops, playerLuck);
+		Map<Item, Double> adjustedDrops = LuckHandler.getAdjustedWeights(WeightedItems.rareDrops, playerLuck);
 		double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
 
 		Item selectedItem = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);

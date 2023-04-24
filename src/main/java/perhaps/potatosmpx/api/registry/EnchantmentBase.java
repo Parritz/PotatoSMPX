@@ -71,7 +71,7 @@ public class EnchantmentBase {
     public static RegistryObject<Enchantment> BOUNTY_HUNTER = ENCHANTMENTS.register("bounty_hunter", () -> new BountyHunterEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> AERIAL_AFFINITY = ENCHANTMENTS.register("aerial_affinity", () -> new AerialAffinityEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST));
     public static RegistryObject<Enchantment> GREEN_THUMB = ENCHANTMENTS.register("green_thumb", () -> new GreenThumbEnchantment(Enchantment.Rarity.VERY_RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
-
+    public static RegistryObject<Enchantment> CROP_COMPRESSOR = ENCHANTMENTS.register("crop_compressor", () -> new CropCompressorEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND));
     public static RegistryObject<Enchantment> MAGNETISM = ENCHANTMENTS.register("magnetism", () -> new MagnetismEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.BREAKABLE, EquipmentSlot.MAINHAND));
     public static void register(IEventBus eventBus) {
         ENCHANTMENTS.register(eventBus);

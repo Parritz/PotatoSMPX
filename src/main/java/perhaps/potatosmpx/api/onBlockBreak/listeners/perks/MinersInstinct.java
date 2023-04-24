@@ -16,5 +16,9 @@ import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
 import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.isSeed;
 
 public class MinersInstinct {
-	// redacted so it starts for perhappykun
+	public static void minersInstinctPerk(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
+        List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
+
+
+    }
 }
