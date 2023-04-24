@@ -13,9 +13,26 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.changeState;
 
 public class Replenish {
+	public static int priority = 1;
+	public static final List<Class<? extends Block>> validBlocks = Arrays.asList(
+			NetherWartBlock.class,
+			CropBlock.class
+	);
+
+	public static final Map<String, Object> enchantmentData = Map.of(
+			"priority", priority,
+			"validBlocks", validBlocks,
+			"enchantment", EnchantmentBase.REPLENISH,
+			"tag", "break"
+	);
+
 	public static void replenishEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
 		int greenThumbLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.GREEN_THUMB.get(), heldItem);
 
@@ -32,6 +49,6 @@ public class Replenish {
 			}
 		}
 
-		changeState(state, seedBlockState);
+		changeState(pos, seedBlockState);
 	}
 }

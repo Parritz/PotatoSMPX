@@ -177,5 +177,7 @@
   "enchantment.potatosmpx.green_thumb": "Green Thumb",
   "enchantment.potatosmpx.green_thumb.desc": "Increases crop growth by 50% per level.",
   "enchantment.potatosmpx.magnetism": "Magnetism",
-  "enchantment.potatosmpx.magnetism.desc": "Instantly pickup any blocks you break or entities that you kill"
+  "enchantment.potatosmpx.magnetism.desc": "Instantly pickup any blocks you break or entities that you kill",
+  "enchantment.potatosmpx.crop_compressor": "Crop Compressor",
+    "enchantment.potatosmpx.crop_compressor.desc": "Automatically compresses crops into their block form when broken."
 }

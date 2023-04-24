@@ -6,6 +6,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -13,43 +14,53 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.config.WeightedItems;
+import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData;
+import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.BountifulHarvest;
+import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor;
+import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData.validEnchantments;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.BountifulHarvest.bountifulHarvestEnchantment;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor.cropCompressorEnchantment;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor.enchantmentData;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.FarmersDelight.farmersDelightEnchantment;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.MomentumBreak.momentumEnchantment;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.quakeEnchantment;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Replenish.replenishEnchantment;
 
 public class OnBlockBreak {
-    private static final Map<BlockState, List<ItemStack>> blockMap = new HashMap<>();
-    private static final Map<BlockState, BlockState> blockStateMap = new HashMap<>();
+    private static final Map<Enchantment, EnchantmentData> enchantmentMapPriority = new HashMap<>();
+    private static final Map<Enchantment, EnchantmentData> enchantmentMap = new HashMap<>();
 
-    public static void changeState(BlockState state, BlockState newState) {
-        blockStateMap.put(state, newState);
+    private static final Map<BlockPos, List<ItemStack>> blockMap = new HashMap<>();
+    private static final Map<BlockPos, BlockState> blockStateMap = new HashMap<>();
+
+    public static void changeState(BlockPos pos, BlockState newState) {
+        blockStateMap.put(pos, newState);
     }
 
-    public static void removeState(BlockState state) {
-        blockStateMap.remove(state);
+    public static void removeState(BlockPos pos) {
+        blockStateMap.remove(pos);
     }
 
-    public static void createDrop(BlockState state, List<ItemStack> drops) {
-        blockMap.put(state, drops);
+    public static void createDrop(BlockPos pos, List<ItemStack> drops) {
+        blockMap.put(pos, drops);
     }
 
-    public static void removeDrop(BlockState state) {
-        blockMap.remove(state);
+    public static void removeDrop(BlockPos pos) {
+        blockMap.remove(pos);
     }
 
     public static List<ItemStack> getDrop(BlockState state, ServerLevel world, BlockPos pos, Player player, ItemStack heldItem, boolean createDropT) {
-        if (blockMap.containsKey(state)) return blockMap.get(state);
+        if (blockMap.containsKey(pos)) return blockMap.get(pos);
 
         List<ItemStack> blockDrops = Block.getDrops(state, world, pos, null, player, heldItem);
-        if (createDropT) createDrop(state, blockDrops);
+        if (createDropT) createDrop(pos, blockDrops);
 
         return blockDrops;
     }
@@ -63,6 +74,17 @@ public class OnBlockBreak {
         world.addFreshEntity(itemEntity);
     }
 
+    public static void addItems(List<ItemStack> drops, Player player, boolean magnetism, ServerLevel serverWorld, int blockX, int blockY, int blockZ) {
+        for (ItemStack itemDrop : drops) {
+            if (itemDrop.getCount() > 0) {
+                boolean success = magnetism ? player.getInventory().add(itemDrop) : false;
+                if (success) {
+                    dropItem(itemDrop, serverWorld, blockX, blockY, blockZ);
+                }
+            }
+        }
+    }
+
     // TODO: Going to clean this up later
     public static void listenBlockBreak(BlockEvent.BreakEvent breakEvent) {
         Player player = breakEvent.getPlayer();
@@ -70,10 +92,34 @@ public class OnBlockBreak {
         ServerLevel serverWorld = (ServerLevel) playerWorld;
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.isEmpty()) return;
+        if (enchantmentMap.isEmpty()) {
+            for (EnchantmentData data : validEnchantments) {
+                int priority = data.getPriority();
+                if (priority == 0) continue;
+
+                Enchantment enchantment = data.getEnchantment();
+
+                if(priority == 1) {
+                    enchantmentMapPriority.put(enchantment, data);
+                } else {
+                    enchantmentMap.put(enchantment, data);
+                }
+            }
+        }
 
         BlockState state = breakEvent.getState();
         Block block = state.getBlock();
         BlockPos pos = breakEvent.getPos();
+
+        for (Map.Entry<Enchantment, EnchantmentData> entry : enchantmentMapPriority.entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            EnchantmentData data = entry.getValue();
+
+            int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, heldItem);
+            if (enchantmentLevel == 0) continue;
+
+            System.out.println("Enchantment: " + enchantment + " Level: " + enchantmentLevel);
+        }
 
         int replenishLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.REPLENISH.get(), heldItem);
         int bountifulHarvestLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.BOUNTIFUL_HARVEST.get(), heldItem);
@@ -107,19 +153,13 @@ public class OnBlockBreak {
         if (autoSmeltLevel <= 0 && blastMasteryLevel <= 0 && replenishLevel <= 0 && bountifulHarvestLevel <= 0 && farmersDelightLevel <= 0 && quakeLevel <= 0) {
             if (magnetismLevel >= 1) {
                 breakEvent.setCanceled(true);
-                for (ItemStack itemDrop : getDrop(state, serverWorld, breakEvent.getPos(), player, heldItem, false)) {
-                    if (itemDrop.getCount() > 0) {
-                        if (!player.getInventory().add(itemDrop)) {
-                            dropItem(itemDrop, serverWorld, blockX, blockY, blockZ);
-                        }
-                    }
-                }
+                addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, true, serverWorld, blockX, blockY, blockZ);
 
-                BlockState newState = blockStateMap.containsKey(state) ? blockStateMap.get(state) : Blocks.AIR.defaultBlockState();
+                BlockState newState = blockStateMap.containsKey(pos) ? blockStateMap.get(pos) : Blocks.AIR.defaultBlockState();
                 playerWorld.setBlock(pos, newState, 3);
 
-                if (blockStateMap.containsKey(state)) removeDrop(state);
-                if (blockMap.containsKey(state)) removeState(state);
+                if (blockStateMap.containsKey(pos)) removeDrop(pos);
+                if (blockMap.containsKey(pos)) removeState(pos);
             }
 
             return;
@@ -134,6 +174,7 @@ public class OnBlockBreak {
                     breakEvent.setCanceled(true);
                     return;
                 }
+
                 replenishEnchantment(breakEvent, replenishLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
             }
 
@@ -159,22 +200,12 @@ public class OnBlockBreak {
         }
 
         breakEvent.setCanceled(true);
-        for (ItemStack itemDrop : getDrop(state, serverWorld, pos, player, heldItem, false)) {
-            if (itemDrop.getCount() > 0) {
-                if (magnetismLevel >= 1) {
-                    if (!player.getInventory().add(itemDrop)) {
-                        dropItem(itemDrop, serverWorld, blockX, blockY, blockZ);
-                    }
-                } else {
-                    dropItem(itemDrop, serverWorld, blockX, blockY, blockZ);
-                }
-            }
-        }
+        addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, magnetismLevel >= 1, serverWorld, blockX, blockY, blockZ);
 
-        BlockState newState = blockStateMap.containsKey(state) ? blockStateMap.get(state) : Blocks.AIR.defaultBlockState();
+        BlockState newState = blockStateMap.containsKey(pos) ? blockStateMap.get(pos) : Blocks.AIR.defaultBlockState();
         playerWorld.setBlock(pos, newState, 3);
 
-        if (blockMap.containsKey(state)) removeDrop(state);
-        if (blockStateMap.containsKey(state)) removeState(state);
+        if (blockMap.containsKey(pos)) removeDrop(pos);
+        if (blockStateMap.containsKey(pos)) removeState(pos);
     }
 }
