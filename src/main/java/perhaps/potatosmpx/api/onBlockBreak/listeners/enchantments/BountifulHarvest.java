@@ -60,8 +60,6 @@ public class BountifulHarvest {
 
 	public static void bountifulHarvestEnchantment(BlockEvent.BreakEvent event, int level, ItemStack heldItem, BlockState state, Block block, ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player) {
 		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
-
-		// Obtain the player's luck
 		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;
 
 		Map<Integer, Double> adjustedDrops = LuckHandler.getAdjustedWeights(WeightedItems.cropDrops, playerLuck);

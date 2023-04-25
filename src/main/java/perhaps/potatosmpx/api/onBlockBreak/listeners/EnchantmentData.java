@@ -4,7 +4,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
-import perhaps.potatosmpx.enchantment.enchantments.QuakeEnchantment;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.QuakeEnchantment;
 
 import java.util.Arrays;
 import java.util.List;

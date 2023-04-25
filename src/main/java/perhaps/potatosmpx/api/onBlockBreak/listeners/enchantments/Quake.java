@@ -55,7 +55,7 @@ public class Quake {
 		}
 	}
 
-	EnchantmentFunction QuakeEnchantment = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
+	public static EnchantmentFunction QuakeEnchantment = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
 		if (!PlayerSkillBase.willRunEnchantment(player, 0.1f, level)) return;
 
 		if (isStoneBased(block)) {

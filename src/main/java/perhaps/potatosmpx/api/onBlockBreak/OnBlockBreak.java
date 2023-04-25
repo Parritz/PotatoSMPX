@@ -30,7 +30,7 @@ import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCom
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor.enchantmentData;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.FarmersDelight.farmersDelightEnchantment;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.MomentumBreak.momentumEnchantment;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.quakeEnchantment;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.QuakeEnchantment;
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Replenish.replenishEnchantment;
 
 public class OnBlockBreak {
@@ -99,7 +99,7 @@ public class OnBlockBreak {
 
                 Enchantment enchantment = data.getEnchantment();
 
-                if(priority == 1) {
+                if (priority == 1) {
                     enchantmentMapPriority.put(enchantment, data);
                 } else {
                     enchantmentMap.put(enchantment, data);
@@ -192,7 +192,7 @@ public class OnBlockBreak {
         }
 
         if (quakeLevel >= 1) {
-            quakeEnchantment(breakEvent, quakeLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
+            QuakeEnchantment(breakEvent, quakeLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
         }
 
         if (momentumLevel >= 1) {
