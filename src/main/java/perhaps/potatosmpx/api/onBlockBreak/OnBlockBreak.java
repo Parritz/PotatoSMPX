@@ -21,7 +21,7 @@ import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.*;
 
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData.validEnchantments;
+import static perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData.onBlockBreakEnchantments;
 
 public class OnBlockBreak {
     private static final Map<Enchantment, EnchantmentData> enchantmentMapPriority = new HashMap<>();
@@ -84,7 +84,7 @@ public class OnBlockBreak {
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.isEmpty()) return;
         if (enchantmentMap.isEmpty()) {
-            for (EnchantmentData data : validEnchantments) {
+            for (EnchantmentData data : onBlockBreakEnchantments) {
                 int priority = data.getPriority();
                 if (priority == 0) continue;
 

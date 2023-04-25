@@ -42,7 +42,7 @@ public class EnchantmentData {
         return function;
     }
 
-    public static final List<EnchantmentData> validEnchantments = Arrays.asList(
+    public static final List<EnchantmentData> onBlockBreakEnchantments = Arrays.asList(
             new EnchantmentData(quakeBreak.priority, quakeBreak.validBlocks, quakeBreak.enchantment, quakeBreak.tag, quakeBreak.mainFunction),
             new EnchantmentData(bountifulHarvestBreak.priority, bountifulHarvestBreak.validBlocks, bountifulHarvestBreak.enchantment, bountifulHarvestBreak.tag, bountifulHarvestBreak.mainFunction),
             new EnchantmentData(momentumBreak.priority, momentumBreak.validBlocks, momentumBreak.enchantment, momentumBreak.tag, momentumBreak.mainFunction),
