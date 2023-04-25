@@ -9,19 +9,22 @@ import net.minecraft.world.level.block.NetherWartBlock;
 import perhaps.potatosmpx.api.config.EnchantmentFunction;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
+import static perhaps.potatosmpx.api.config.ConfigCommon.composterDrops;
 import static perhaps.potatosmpx.api.config.ConfigCommon.cropCompressorDrops;
 import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
 
-public class cropCompressorBreak {
-    public static int priority = 2;
+public class composterBreak {
+    public static int priority = 1;
     public static final List<Class<? extends Block>> validBlocks = Arrays.asList(
-        NetherWartBlock.class,
-        CropBlock.class
+            NetherWartBlock.class,
+            CropBlock.class
     );
+
     public static String tag = "drop";
-    public static Enchantment enchantment = EnchantmentBase.CROP_COMPRESSOR.get();
+    public static Enchantment enchantment = EnchantmentBase.COMPOSTER.get();
 
     public static EnchantmentFunction mainFunction = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
         List<ItemStack> cropDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
@@ -29,7 +32,7 @@ public class cropCompressorBreak {
         for (ItemStack itemStack : player.getInventory().items) {
             Item cropItem = itemStack.getItem();
 
-            Item compressedCrop = cropCompressorDrops.get(cropItem);
+            Item compressedCrop = composterDrops.get(cropItem);
             if (compressedCrop == null) continue;
 
             int oldCount = itemStack.getCount();
@@ -38,7 +41,7 @@ public class cropCompressorBreak {
             int excessCount = oldCount % 9;
 
             itemStack.setCount(excessCount);
-            cropDrops.add(new ItemStack(cropCompressorDrops.get(cropItem), compressedCount));
+            cropDrops.add(new ItemStack(composterDrops.get(cropItem), compressedCount));
         }
     };
 }

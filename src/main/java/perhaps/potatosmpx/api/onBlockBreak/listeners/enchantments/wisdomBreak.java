@@ -7,8 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.OreBlock;
-import perhaps.potatosmpx.api.config.CropHandler;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentFunction;
+import perhaps.potatosmpx.api.config.EnchantmentFunction;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.Arrays;

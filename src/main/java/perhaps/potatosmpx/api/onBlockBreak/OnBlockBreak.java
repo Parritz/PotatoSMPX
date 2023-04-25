@@ -8,20 +8,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
-import perhaps.potatosmpx.api.config.CropHandler;
-import perhaps.potatosmpx.api.config.WeightedItems;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentFunction;
+import perhaps.potatosmpx.api.config.*;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.*;
 
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData.onBlockBreakEnchantments;
+import static perhaps.potatosmpx.api.config.EnchantmentData.onBlockBreakEnchantments;
 
 public class OnBlockBreak {
     private static final Map<Enchantment, EnchantmentData> enchantmentMapPriority = new HashMap<>();
@@ -71,7 +67,7 @@ public class OnBlockBreak {
         for (ItemStack itemDrop : drops) {
             if (itemDrop.getCount() > 0) {
                 boolean success = magnetism ? player.getInventory().add(itemDrop) : false;
-                if (success) {
+                if (!success) {
                     dropItem(itemDrop, serverWorld, blockX, blockY, blockZ);
                 }
             }
@@ -134,6 +130,8 @@ public class OnBlockBreak {
             if (!isValidBlock) continue;
             enchantmentsPassed++;
 
+            System.out.println(data);
+
             EnchantmentFunction function = data.getFunction();
             function.apply(breakEvent, enchantmentLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
         }
@@ -141,11 +139,16 @@ public class OnBlockBreak {
         int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem);
 
         if (enchantmentsPassed <= 0) return;
+        System.out.println("passed");
         int blockX = (int) (pos.getX() + 0.5);
         int blockY = (int) (pos.getY() + 0.5);
         int blockZ = (int) (pos.getZ() + 0.5);
 
         breakEvent.setCanceled(true);
+        for (ItemStack drop : getDrop(state, serverWorld, pos, player, heldItem, false)) {
+            System.out.println(drop);
+        }
+
         addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, magnetismLevel >= 1, serverWorld, blockX, blockY, blockZ);
 
         BlockState newState = blockStateMap.containsKey(pos) ? blockStateMap.get(pos) : Blocks.AIR.defaultBlockState();

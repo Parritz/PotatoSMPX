@@ -1,8 +1,9 @@
-package perhaps.potatosmpx.api.onBlockBreak.listeners;
+package perhaps.potatosmpx.api.config;
 
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.*;
+import perhaps.potatosmpx.api.onBreakSpeed.listeners.enchantments.MomentumSpeed;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,11 @@ public class EnchantmentData {
             new EnchantmentData(cropCompressorBreak.priority, cropCompressorBreak.validBlocks, cropCompressorBreak.enchantment, cropCompressorBreak.tag, cropCompressorBreak.mainFunction),
             new EnchantmentData(replenishBreak.priority, replenishBreak.validBlocks, replenishBreak.enchantment, replenishBreak.tag, replenishBreak.mainFunction),
             new EnchantmentData(farmersDelightBreak.priority, farmersDelightBreak.validBlocks, farmersDelightBreak.enchantment, farmersDelightBreak.tag, farmersDelightBreak.mainFunction),
-            new EnchantmentData(wisdomBreak.priority, wisdomBreak.validBlocks, wisdomBreak.enchantment, wisdomBreak.tag, wisdomBreak.mainFunction)
+            new EnchantmentData(wisdomBreak.priority, wisdomBreak.validBlocks, wisdomBreak.enchantment, wisdomBreak.tag, wisdomBreak.mainFunction),
+            new EnchantmentData(composterBreak.priority, composterBreak.validBlocks, composterBreak.enchantment, composterBreak.tag, composterBreak.mainFunction)
+    );
+
+    public static final List<EnchantmentData> onBreakSpeedEnchantments = Arrays.asList(
+            new EnchantmentData(MomentumSpeed.priority, MomentumSpeed.validBlocks, MomentumSpeed.enchantment, MomentumSpeed.tag, MomentumSpeed.mainFunction)
     );
 }

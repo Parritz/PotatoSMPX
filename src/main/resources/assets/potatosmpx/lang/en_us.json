@@ -179,5 +179,7 @@
   "enchantment.potatosmpx.magnetism": "Magnetism",
   "enchantment.potatosmpx.magnetism.desc": "Instantly pickup any blocks you break or entities that you kill",
   "enchantment.potatosmpx.crop_compressor": "Crop Compressor",
-    "enchantment.potatosmpx.crop_compressor.desc": "Automatically compresses crops into their block form when broken."
+    "enchantment.potatosmpx.crop_compressor.desc": "Automatically compresses crops into their block form when broken.",
+  "enchantment.potatosmpx.composter": "Composter",
+    "enchantment.potatosmpx.composter.desc": "Automatically composts seeds when broken."
 }

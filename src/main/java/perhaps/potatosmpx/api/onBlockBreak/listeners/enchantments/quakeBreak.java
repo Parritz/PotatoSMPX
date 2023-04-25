@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentFunction;
+import perhaps.potatosmpx.api.config.EnchantmentFunction;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 import perhaps.potatosmpx.api.registry.PlayerSkillBase;
 

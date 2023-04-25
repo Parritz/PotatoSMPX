@@ -11,4 +11,11 @@ public class ConfigCommon {
     public static Map<Item, Item> cropCompressorDrops = Map.of(
             Items.WHEAT, Items.HAY_BLOCK
     );
+
+    public static Map<Item, Item> composterDrops = Map.of(
+            Items.WHEAT_SEEDS, Items.BONE_BLOCK,
+            Items.BEETROOT_SEEDS, Items.BONE_BLOCK,
+            Items.PUMPKIN_SEEDS, Items.BONE_BLOCK,
+            Items.MELON_SEEDS, Items.BONE_BLOCK
+    );
 }
