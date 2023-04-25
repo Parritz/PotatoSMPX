@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class PlayerSkillBase {
     public static int getLuck(Player player) {
-        return 500;
+        return 100;
     }
 
     public static boolean willRunEnchantment(Player player, float baseChance, int currentLevel) {

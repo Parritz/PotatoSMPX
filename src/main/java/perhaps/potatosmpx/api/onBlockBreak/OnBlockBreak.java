@@ -13,29 +13,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.world.BlockEvent;
+import perhaps.potatosmpx.api.config.CropHandler;
 import perhaps.potatosmpx.api.config.WeightedItems;
 import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.BountifulHarvest;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake;
+import perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentFunction;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Supplier;
 
 import static perhaps.potatosmpx.api.onBlockBreak.listeners.EnchantmentData.validEnchantments;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.BountifulHarvest.bountifulHarvestEnchantment;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor.cropCompressorEnchantment;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.CropCompressor.enchantmentData;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.FarmersDelight.farmersDelightEnchantment;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.MomentumBreak.momentumEnchantment;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.QuakeEnchantment;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Replenish.replenishEnchantment;
 
 public class OnBlockBreak {
     private static final Map<Enchantment, EnchantmentData> enchantmentMapPriority = new HashMap<>();
     private static final Map<Enchantment, EnchantmentData> enchantmentMap = new HashMap<>();
+    private static final Map<Enchantment, EnchantmentData> afterDropMap = new HashMap<>();
+
+    private static final Map<Enchantment, EnchantmentData> combinedMap = new LinkedHashMap<>();
 
     private static final Map<BlockPos, List<ItemStack>> blockMap = new HashMap<>();
     private static final Map<BlockPos, BlockState> blockStateMap = new HashMap<>();
@@ -84,8 +77,6 @@ public class OnBlockBreak {
             }
         }
     }
-
-    // TODO: Going to clean this up later
     public static void listenBlockBreak(BlockEvent.BreakEvent breakEvent) {
         Player player = breakEvent.getPlayer();
         Level playerWorld = player.level;
@@ -101,103 +92,58 @@ public class OnBlockBreak {
 
                 if (priority == 1) {
                     enchantmentMapPriority.put(enchantment, data);
-                } else {
+                } else if (priority == 2) {
                     enchantmentMap.put(enchantment, data);
+                } else {
+                    afterDropMap.put(enchantment, data);
                 }
             }
+
+            combinedMap.putAll(enchantmentMapPriority);
+            combinedMap.putAll(enchantmentMap);
         }
 
         BlockState state = breakEvent.getState();
         Block block = state.getBlock();
         BlockPos pos = breakEvent.getPos();
 
-        for (Map.Entry<Enchantment, EnchantmentData> entry : enchantmentMapPriority.entrySet()) {
+        int replenishLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.REPLENISH.get(), heldItem);
+        if (replenishLevel >= 1 && CropHandler.isCrop(block) && !CropHandler.isMaxAge(state)) {
+            breakEvent.setCanceled(true);
+            return;
+        }
+
+        int enchantmentsPassed = 0;
+        for (Map.Entry<Enchantment, EnchantmentData> entry : combinedMap.entrySet()) {
             Enchantment enchantment = entry.getKey();
             EnchantmentData data = entry.getValue();
 
             int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, heldItem);
             if (enchantmentLevel == 0) continue;
 
-            System.out.println("Enchantment: " + enchantment + " Level: " + enchantmentLevel);
-        }
+            List<Class<? extends Block>> ValidBlocks = data.getValidBlocks();
 
-        int replenishLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.REPLENISH.get(), heldItem);
-        int bountifulHarvestLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.BOUNTIFUL_HARVEST.get(), heldItem);
-        int autoSmeltLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.AUTO_SMELT.get(), heldItem);
-        int blastMasteryLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.BLAST_MASTERY.get(), heldItem);
-        int farmersDelightLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.FARMERS_DELIGHT.get(), heldItem);
-        int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem);
-        int cropCompressorLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.CROP_COMPRESSOR.get(), heldItem);
-
-        int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.QUAKE.get(), heldItem);
-        int momentumLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MOMENTUM.get(), heldItem);
-
-        int wisdomLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.WISDOM.get(), heldItem);
-        int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, heldItem);
-        int silkTouchLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, heldItem);
-
-        NetherWartBlock netherWartBlock = block instanceof NetherWartBlock ? (NetherWartBlock) block : null;
-        CropBlock cropBlock = block instanceof CropBlock ? (CropBlock) block : null;
-        if (wisdomLevel >= 1) {
-            if (block instanceof OreBlock) {
-                int extraXp = block.getExpDrop(state, playerWorld, pos, fortuneLevel, silkTouchLevel) * wisdomLevel;
-                player.giveExperiencePoints(extraXp);
-            } else if (cropBlock != null && cropBlock.isMaxAge(state)) {
-                player.giveExperiencePoints((int) (0.5f + (wisdomLevel * 0.1)));
+            boolean isValidBlock = ValidBlocks.isEmpty();
+            for (Class<? extends Block> validBlockClass : ValidBlocks) {
+                if (validBlockClass.isInstance(block)) {
+                    isValidBlock = true;
+                    break;
+                }
             }
+
+            if (!isValidBlock) continue;
+            enchantmentsPassed++;
+
+            EnchantmentFunction function = data.getFunction();
+            function.apply(breakEvent, enchantmentLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
         }
 
+        int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem);
+
+        if (enchantmentsPassed <= 0) return;
         int blockX = (int) (pos.getX() + 0.5);
         int blockY = (int) (pos.getY() + 0.5);
         int blockZ = (int) (pos.getZ() + 0.5);
-        if (autoSmeltLevel <= 0 && blastMasteryLevel <= 0 && replenishLevel <= 0 && bountifulHarvestLevel <= 0 && farmersDelightLevel <= 0 && quakeLevel <= 0) {
-            if (magnetismLevel >= 1) {
-                breakEvent.setCanceled(true);
-                addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, true, serverWorld, blockX, blockY, blockZ);
-
-                BlockState newState = blockStateMap.containsKey(pos) ? blockStateMap.get(pos) : Blocks.AIR.defaultBlockState();
-                playerWorld.setBlock(pos, newState, 3);
-
-                if (blockStateMap.containsKey(pos)) removeDrop(pos);
-                if (blockMap.containsKey(pos)) removeState(pos);
-            }
-
-            return;
-        }
-
-        if (netherWartBlock != null || cropBlock != null) {
-            int currentAge = netherWartBlock != null ? state.getValue(NetherWartBlock.AGE) : 3;
-            boolean isMaxAge = netherWartBlock != null ? currentAge == NetherWartBlock.MAX_AGE : cropBlock.isMaxAge(state);
-
-            if (replenishLevel >= 1) {
-                if (!isMaxAge) {
-                    breakEvent.setCanceled(true);
-                    return;
-                }
-
-                replenishEnchantment(breakEvent, replenishLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-            }
-
-            if (bountifulHarvestLevel >= 1) {
-                bountifulHarvestEnchantment(breakEvent, bountifulHarvestLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-            }
-
-            if (farmersDelightLevel >= 1) {
-                farmersDelightEnchantment(breakEvent, farmersDelightLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-            }
-
-            if (cropCompressorLevel >= 1) {
-                cropCompressorEnchantment(breakEvent, cropCompressorLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-            }
-        }
-
-        if (quakeLevel >= 1) {
-            QuakeEnchantment(breakEvent, quakeLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-        }
-
-        if (momentumLevel >= 1) {
-            momentumEnchantment(breakEvent, momentumLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
-        }
 
         breakEvent.setCanceled(true);
         addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, magnetismLevel >= 1, serverWorld, blockX, blockY, blockZ);
@@ -207,5 +153,28 @@ public class OnBlockBreak {
 
         if (blockMap.containsKey(pos)) removeDrop(pos);
         if (blockStateMap.containsKey(pos)) removeState(pos);
+
+        for (Map.Entry<Enchantment, EnchantmentData> entry : afterDropMap.entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            EnchantmentData data = entry.getValue();
+
+            int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, heldItem);
+            if (enchantmentLevel == 0) continue;
+
+            List<Class<? extends Block>> ValidBlocks = data.getValidBlocks();
+
+            boolean isValidBlock = ValidBlocks.isEmpty();
+            for (Class<? extends Block> validBlockClass : ValidBlocks) {
+                if (validBlockClass.isInstance(block)) {
+                    isValidBlock = true;
+                    break;
+                }
+            }
+
+            if (!isValidBlock) continue;
+
+            EnchantmentFunction function = data.getFunction();
+            function.apply(breakEvent, enchantmentLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
+        }
     }
 }

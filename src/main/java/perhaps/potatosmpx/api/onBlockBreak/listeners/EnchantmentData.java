@@ -2,9 +2,7 @@ package perhaps.potatosmpx.api.onBlockBreak.listeners;
 
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
-import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake;
-import perhaps.potatosmpx.api.registry.EnchantmentBase;
-import static perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.Quake.QuakeEnchantment;
+import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +38,17 @@ public class EnchantmentData {
         return tag;
     }
 
+    public EnchantmentFunction getFunction() {
+        return function;
+    }
+
     public static final List<EnchantmentData> validEnchantments = Arrays.asList(
-            new EnchantmentData(Quake.priority, EnchantmentBase.QUAKE.get(), Quake.tag, QuakeEnchantment)
+            new EnchantmentData(quakeBreak.priority, quakeBreak.validBlocks, quakeBreak.enchantment, quakeBreak.tag, quakeBreak.mainFunction),
+            new EnchantmentData(bountifulHarvestBreak.priority, bountifulHarvestBreak.validBlocks, bountifulHarvestBreak.enchantment, bountifulHarvestBreak.tag, bountifulHarvestBreak.mainFunction),
+            new EnchantmentData(momentumBreak.priority, momentumBreak.validBlocks, momentumBreak.enchantment, momentumBreak.tag, momentumBreak.mainFunction),
+            new EnchantmentData(cropCompressorBreak.priority, cropCompressorBreak.validBlocks, cropCompressorBreak.enchantment, cropCompressorBreak.tag, cropCompressorBreak.mainFunction),
+            new EnchantmentData(replenishBreak.priority, replenishBreak.validBlocks, replenishBreak.enchantment, replenishBreak.tag, replenishBreak.mainFunction),
+            new EnchantmentData(farmersDelightBreak.priority, farmersDelightBreak.validBlocks, farmersDelightBreak.enchantment, farmersDelightBreak.tag, farmersDelightBreak.mainFunction),
+            new EnchantmentData(wisdomBreak.priority, wisdomBreak.validBlocks, wisdomBreak.enchantment, wisdomBreak.tag, wisdomBreak.mainFunction)
     );
 }
