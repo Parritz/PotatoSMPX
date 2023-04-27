@@ -1,34 +1,34 @@
 package perhaps.potatosmpx.api.config;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.*;
 import perhaps.potatosmpx.api.onBreakSpeed.listeners.enchantments.MomentumSpeed;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
 public class EnchantmentData {
     private EnchantmentFunction function;
     private int priority;
-    private List<Class<? extends Block>> validBlocks;
     private Enchantment enchantment;
     private String tag;
 
-    public EnchantmentData(int priority, List<Class<? extends Block>> validBlocks, Enchantment enchantment, String tag, EnchantmentFunction func) {
+    private List<Class<? extends Block>> validBlocks;
+
+    public EnchantmentData(int priority, Enchantment enchantment, String tag, @Nullable EnchantmentFunction func, @Nullable List<Class<? extends Block>> validBlocks) {
         this.priority = priority;
-        this.validBlocks = validBlocks;
         this.enchantment = enchantment;
         this.tag = tag;
         this.function = func;
+        this.validBlocks = validBlocks;
     }
 
     public int getPriority() {
         return priority;
-    }
-
-    public List<Class<? extends Block>> getValidBlocks() {
-        return validBlocks;
     }
 
     public Enchantment getEnchantment() {
@@ -42,19 +42,22 @@ public class EnchantmentData {
     public EnchantmentFunction getFunction() {
         return function;
     }
+    public List<Class<? extends Block>> getValidBlocks() {
+        return validBlocks;
+    }
 
     public static final List<EnchantmentData> onBlockBreakEnchantments = Arrays.asList(
-            new EnchantmentData(quakeBreak.priority, quakeBreak.validBlocks, quakeBreak.enchantment, quakeBreak.tag, quakeBreak.mainFunction),
-            new EnchantmentData(bountifulHarvestBreak.priority, bountifulHarvestBreak.validBlocks, bountifulHarvestBreak.enchantment, bountifulHarvestBreak.tag, bountifulHarvestBreak.mainFunction),
-            new EnchantmentData(momentumBreak.priority, momentumBreak.validBlocks, momentumBreak.enchantment, momentumBreak.tag, momentumBreak.mainFunction),
-            new EnchantmentData(cropCompressorBreak.priority, cropCompressorBreak.validBlocks, cropCompressorBreak.enchantment, cropCompressorBreak.tag, cropCompressorBreak.mainFunction),
-            new EnchantmentData(replenishBreak.priority, replenishBreak.validBlocks, replenishBreak.enchantment, replenishBreak.tag, replenishBreak.mainFunction),
-            new EnchantmentData(farmersDelightBreak.priority, farmersDelightBreak.validBlocks, farmersDelightBreak.enchantment, farmersDelightBreak.tag, farmersDelightBreak.mainFunction),
-            new EnchantmentData(wisdomBreak.priority, wisdomBreak.validBlocks, wisdomBreak.enchantment, wisdomBreak.tag, wisdomBreak.mainFunction),
-            new EnchantmentData(composterBreak.priority, composterBreak.validBlocks, composterBreak.enchantment, composterBreak.tag, composterBreak.mainFunction)
+            new EnchantmentData(quakeBreak.priority, quakeBreak.enchantment, quakeBreak.tag, quakeBreak.mainFunction, quakeBreak.validBlocks),
+            new EnchantmentData(bountifulHarvestBreak.priority, bountifulHarvestBreak.enchantment, bountifulHarvestBreak.tag, bountifulHarvestBreak.mainFunction, bountifulHarvestBreak.validBlocks),
+            new EnchantmentData(momentumBreak.priority, momentumBreak.enchantment, momentumBreak.tag, momentumBreak.mainFunction, momentumBreak.validBlocks),
+            new EnchantmentData(cropCompressorBreak.priority, cropCompressorBreak.enchantment, cropCompressorBreak.tag, cropCompressorBreak.mainFunction, cropCompressorBreak.validBlocks),
+            new EnchantmentData(replenishBreak.priority, replenishBreak.enchantment, replenishBreak.tag, replenishBreak.mainFunction, replenishBreak.validBlocks),
+            new EnchantmentData(farmersDelightBreak.priority, farmersDelightBreak.enchantment, farmersDelightBreak.tag, farmersDelightBreak.mainFunction, farmersDelightBreak.validBlocks),
+            new EnchantmentData(wisdomBreak.priority, wisdomBreak.enchantment, wisdomBreak.tag, wisdomBreak.mainFunction, wisdomBreak.validBlocks),
+            new EnchantmentData(composterBreak.priority, composterBreak.enchantment, composterBreak.tag, composterBreak.mainFunction, composterBreak.validBlocks)
     );
 
     public static final List<EnchantmentData> onBreakSpeedEnchantments = Arrays.asList(
-            new EnchantmentData(MomentumSpeed.priority, MomentumSpeed.validBlocks, MomentumSpeed.enchantment, MomentumSpeed.tag, MomentumSpeed.mainFunction)
+            new EnchantmentData(MomentumSpeed.priority, MomentumSpeed.enchantment, MomentumSpeed.tag, MomentumSpeed.mainFunction, MomentumSpeed.validBlocks)
     );
 }

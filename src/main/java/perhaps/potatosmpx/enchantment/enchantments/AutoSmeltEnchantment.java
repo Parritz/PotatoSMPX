@@ -54,45 +54,6 @@ public class AutoSmeltEnchantment extends Enchantment {
     private final Map<Item, ItemStack> blockRecipeCache = new HashMap<>();
 
     @SubscribeEvent
-    public void onLivingDrops(LivingDropsEvent event) {
-        DamageSource source = event.getSource();
-        Entity attacker = source.getDirectEntity();
-        Collection<ItemEntity> entityDrops = event.getDrops();
-
-        if (!(attacker instanceof Player player)) return;
-
-        Level world = player.level;
-        ItemStack heldItem = player.getMainHandItem();
-        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-        if (level <= 0 || heldItem.isEmpty() || world.isClientSide) return;
-
-        for (ItemEntity itemEntity : entityDrops) {
-            ItemStack drop = itemEntity.getItem();
-            Item dropItem = drop.getItem();
-
-            ItemStack result;
-            if (entityRecipeCache.containsKey(dropItem)) {
-                result = entityRecipeCache.get(dropItem);
-            } else {
-                SimpleContainer itemContainer = new SimpleContainer(drop);
-                Optional<SmeltingRecipe> optional = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, itemContainer, world);
-
-                if (optional.isPresent()) {
-                    SmeltingRecipe furnaceRecipe = optional.get();
-                    result = furnaceRecipe.getResultItem().copy();
-                    entityRecipeCache.put(dropItem, result);
-                } else {
-                    result = null;
-                }
-            }
-
-            if (result == null) return;
-            ItemStack copyItem = result.copy();
-            itemEntity.setItem(copyItem);
-        }
-    }
-
-    @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         OnBlockBreak.listenBlockBreak(event);
     }

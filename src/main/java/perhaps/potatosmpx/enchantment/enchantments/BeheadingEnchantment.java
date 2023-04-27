@@ -43,24 +43,4 @@ public class BeheadingEnchantment extends Enchantment {
             EntityType.CREEPER, Items.CREEPER_HEAD,
             EntityType.PLAYER, Items.PLAYER_HEAD
     );
-
-    @SubscribeEvent
-    public void onLivingDrops(LivingDropsEvent event) {
-        Entity target = event.getEntityLiving();
-        Entity attacker = event.getSource().getDirectEntity();
-        BlockPos pos = target.blockPosition();
-        if (!(attacker instanceof Player player)) return;
-
-        Level world = player.level;
-        ItemStack heldItem = player.getMainHandItem();
-        int level = EnchantmentHelper.getItemEnchantmentLevel(this, heldItem);
-        if (level <= 0 || world.isClientSide || heldItem.isEmpty()) return;
-
-        EntityType<?> entityType = target.getType();
-        if (!entityHeads.containsKey(entityType) || world.getRandom().nextFloat() > (0.05f * level)) return;
-
-        ItemStack entityHeadStack = new ItemStack(entityHeads.get(entityType));
-        ItemEntity headEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entityHeadStack);
-        world.addFreshEntity(headEntity);
-    }
 }

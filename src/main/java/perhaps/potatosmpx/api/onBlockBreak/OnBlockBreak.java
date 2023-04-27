@@ -130,8 +130,6 @@ public class OnBlockBreak {
             if (!isValidBlock) continue;
             enchantmentsPassed++;
 
-            System.out.println(data);
-
             EnchantmentFunction function = data.getFunction();
             function.apply(breakEvent, enchantmentLevel, heldItem, state, block, serverWorld, playerWorld, pos, player);
         }
@@ -139,14 +137,12 @@ public class OnBlockBreak {
         int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem);
 
         if (enchantmentsPassed <= 0) return;
-        System.out.println("passed");
         int blockX = (int) (pos.getX() + 0.5);
         int blockY = (int) (pos.getY() + 0.5);
         int blockZ = (int) (pos.getZ() + 0.5);
 
         breakEvent.setCanceled(true);
         for (ItemStack drop : getDrop(state, serverWorld, pos, player, heldItem, false)) {
-            System.out.println(drop);
         }
 
         addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, magnetismLevel >= 1, serverWorld, blockX, blockY, blockZ);

@@ -13,5 +13,5 @@ import net.minecraftforge.eventbus.api.Event;
 import javax.annotation.Nullable;
 
 public interface EnchantmentFunction {
-    void apply(Event event, int level, ItemStack heldItem, BlockState state, Block block, @Nullable ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player);
+    void apply(Event event, int level, ItemStack heldItem, @Nullable BlockState state, Block block, @Nullable ServerLevel serverWorld, Level playerWorld, BlockPos pos, Player player);
 }

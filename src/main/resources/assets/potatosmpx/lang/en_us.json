@@ -66,6 +66,21 @@
   "item.potatosmpx.hero_hoe": "Hero Hoe",
   "item.potatosmpx.hero_hoe.desc": "Ultimate hoe for the greatest of warriors.",
 
+  "block.potatosmpx.compressed_hay_block": "Compressed Hay Bale",
+  "block.potatosmpx.compressed_hay_block.desc": "Compressed version of Hay Bales (81 wheat)",
+
+    "block.potatosmpx.double_compressed_hay_block": "Double Compressed Hay Bale",
+    "block.potatosmpx.double_compressed_hay_block.desc": "Compressed version of Compressed Hay Bales (729 wheat)",
+
+    "block.potatosmpx.triple_compressed_hay_block": "Triple Compressed Hay Bale",
+    "block.potatosmpx.triple_compressed_hay_block.desc": "Compressed version of Double Compressed Hay Bales (6561 wheat)",
+
+    "block.potatosmpx.quadruple_compressed_hay_block": "Quadruple Compressed Hay Bale",
+    "block.potatosmpx.quadruple_compressed_hay_block.desc": "Compressed version of Triple Compressed Hay Bales (59049 wheat)",
+
+    "block.potatosmpx.quintuple_compressed_hay_block": "Quintuple Compressed Hay Bale",
+    "block.potatosmpx.quintuple_compressed_hay_block.desc": "Compressed version of Quadruple Compressed Hay Bales (531441 wheat)",
+
   "enchantment.potatosmpx.beheading": "Beheading",
   "enchantment.potatosmpx.beheading.desc": "5% chance per level for entity head drops.",
   "enchantment.potatosmpx.ore_compactor": "Ore Compactor",

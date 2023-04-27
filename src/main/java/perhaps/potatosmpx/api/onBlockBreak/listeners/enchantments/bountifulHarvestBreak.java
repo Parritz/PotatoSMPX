@@ -38,14 +38,15 @@ public class bountifulHarvestBreak {
 		double totalWeight = LuckHandler.getTotalWeight(adjustedDrops);
 
 		for (ItemStack drop : blockDrops) {
-			if (!CropHandler.isCropItem(drop.getItem())) { System.out.println(drop.getItem()); continue; } // Skip any seeds
+			if (!CropHandler.isCropItem(drop.getItem())) { continue; } // Skip any seeds
 
 			int currentCount = drop.getCount();
 			int getResult = LuckHandler.getResultEntry(playerWorld, totalWeight, adjustedDrops);
 			if (getResult == 0) continue;
 
-			int additionalCount = getResult + level - currentCount;
+			int additionalCount = getResult + level;
 			drop.setCount(currentCount + additionalCount);
+			System.out.println(drop.getCount());
 		}
 	};
 }

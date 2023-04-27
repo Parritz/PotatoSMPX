@@ -158,7 +158,6 @@ dependencies {
     implementation fg.deobf("curse.maven:aiimprovements-233019:3798941")
     implementation fg.deobf("curse.maven:lazydfu-460819:3544496")
     implementation fg.deobf("curse.maven:fpsreducer-280294:3680785")
-    implementation fg.deobf("curse.maven:distanthorizons-508933:3863541")
 
     implementation fg.deobf("curse.maven:clumps-256717:4153344")
     implementation fg.deobf("curse.maven:spark-361579:4505375")
