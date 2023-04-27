@@ -67,7 +67,6 @@ public class cropCompressorBreak {
                 int compressedCount = count / 9;
                 int excessCount = count % 9;
 
-                System.out.println(compressedCount + " " + excessCount);
                 if (compressedCount >= 9) {
                     newItems.add(new ItemStack(compressedItem, excessCount));
                 } else {
