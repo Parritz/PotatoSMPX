@@ -80,7 +80,7 @@ public class cropCompressorBreak {
         }
 
         return newItems;
-    }
+    } // test
 
     public static EnchantmentFunction mainFunction = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
         List<ItemStack> newDrops = compressInventory(player);
