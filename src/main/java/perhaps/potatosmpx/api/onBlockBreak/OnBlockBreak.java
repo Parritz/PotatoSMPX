@@ -1,5 +1,6 @@
 package perhaps.potatosmpx.api.onBlockBreak;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -15,6 +16,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.config.*;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static perhaps.potatosmpx.api.config.EnchantmentData.onBlockBreakEnchantments;
@@ -54,6 +56,14 @@ public class OnBlockBreak {
         return blockDrops;
     }
 
+    public static Pair<List<ItemStack>, BlockState> getDropNew(List<ItemStack> drops, @Nullable BlockState state) {
+        // my original function wasn't at all what was wanted so it got nuked
+        // im confused by what perhaps wants & im bad at forge let alone java :sob: (am most useless programmer)
+        // dk why this man still employs me
+
+        return new Pair<>(drops, state);
+    }
+
     public static boolean isSeed(Item item) {
         return WeightedItems.cropSeeds.contains(item);
     }
@@ -73,6 +83,7 @@ public class OnBlockBreak {
             }
         }
     }
+
     public static void listenBlockBreak(BlockEvent.BreakEvent breakEvent) {
         Player player = breakEvent.getPlayer();
         Level playerWorld = player.level;

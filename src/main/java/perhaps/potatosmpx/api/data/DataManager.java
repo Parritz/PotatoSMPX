@@ -1,8 +1,11 @@
-package perhaps.potatosmpx.api.registry;
+package perhaps.potatosmpx.api.data;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -10,44 +13,41 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DataManager implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-	public static final Capability<DataManager> DATA_CAPABILITY = null;
+	public static final Capability<PlayerAdvantages> PLAYER_ADVANTAGES = CapabilityManager.get(new CapabilityToken<PlayerAdvantages>() { });
 
-	private int testing = 0;
+	private PlayerAdvantages advantages = null;
+	private final LazyOptional<PlayerAdvantages> optional = LazyOptional.of(this::createPlayerAdvantages);
 
-	public int getTesting() {
-		return testing;
+	private PlayerAdvantages createPlayerAdvantages() {
+		if (this.advantages == null) {
+			this.advantages = new PlayerAdvantages();
+		}
+
+		return this.advantages;
 	}
 
-	public void setTesting(int testing) {
-		this.testing = testing;
-	}
-
-	public void increaseTesting() {
-		testing++;
-	}
-
-	public void decreaseTesting() {
-		testing--;
+	public PlayerAdvantages getPlayerAdvantages() {
+		return advantages;
 	}
 
 	@NotNull
 	@Override
 	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-		if (cap == DATA_CAPABILITY) {
-			return LazyOptional.of(() -> (T) this);
+		if (cap == PLAYER_ADVANTAGES) {
+			return optional.cast();
 		}
+
 		return LazyOptional.empty();
 	}
 
 	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag nbt = new CompoundTag();
-		nbt.putInt("testing", testing);
 		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
-		testing = nbt.getInt("testing");
+		// abc
 	}
 }

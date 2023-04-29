@@ -32,7 +32,7 @@ public class Potatosmpx {
         eventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigCommon.SPEC, "potatosmpx-common.toml");
+//        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigCommon.SPEC, "potatosmpx-common.toml");
     }
 
     private void setup(final FMLCommonSetupEvent event) {

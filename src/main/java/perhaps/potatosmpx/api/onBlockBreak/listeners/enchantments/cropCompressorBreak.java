@@ -8,16 +8,13 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
-import oshi.util.tuples.Pair;
 import perhaps.potatosmpx.api.config.EnchantmentFunction;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.*;
 
-import static perhaps.potatosmpx.api.config.ConfigCommon.composterDrops;
 import static perhaps.potatosmpx.api.config.ConfigCommon.cropCompressorDrops;
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.addItems;
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
+import static perhaps.potatosmpx.api.onDrop.OnDrop.addItems;
 
 public class cropCompressorBreak {
     public static int priority = 3;

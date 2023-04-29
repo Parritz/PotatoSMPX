@@ -6,7 +6,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import perhaps.potatosmpx.api.registry.DataManager;
+import perhaps.potatosmpx.api.data.DataManager;
 
 // This class is for testing purposes
 public class Abilities {
