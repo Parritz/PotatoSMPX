@@ -1,16 +1,6 @@
 {
   "variants": {
-    "axis=x": {
-      "model": "potatosmpx:block/compressed_hay_block_horizontal",
-      "x": 90,
-      "y": 90
-    },
-    "axis=y": {
-      "model": "potatosmpx:block/compressed_hay_block"
-    },
-    "axis=z": {
-      "model": "potatosmpx:block/compressed_hay_block_horizontal",
-      "x": 90
-    }
+    "": { "model": "potatosmpx:block/compressed_hay_block" },
+    "horizontal": { "model": "potatosmpx:block/compressed_hay_block_horizontal" }
   }
 }
