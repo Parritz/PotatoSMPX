@@ -1,11 +1,9 @@
 package perhaps.potatosmpx.api.config;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import perhaps.potatosmpx.api.onBlockBreak.listeners.enchantments.*;
-import perhaps.potatosmpx.api.onBreakSpeed.listeners.enchantments.MomentumSpeed;
+import perhaps.potatosmpx.api.onBreakSpeed.listeners.enchantments.*;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -58,6 +56,11 @@ public class EnchantmentData {
     );
 
     public static final List<EnchantmentData> onBreakSpeedEnchantments = Arrays.asList(
-            new EnchantmentData(MomentumSpeed.priority, MomentumSpeed.enchantment, MomentumSpeed.tag, MomentumSpeed.mainFunction, MomentumSpeed.validBlocks)
+            new EnchantmentData(MomentumSpeed.priority, MomentumSpeed.enchantment, MomentumSpeed.tag, MomentumSpeed.mainFunction, MomentumSpeed.validBlocks),
+            new EnchantmentData(DeepMiner.priority, DeepMiner.enchantment, DeepMiner.tag, DeepMiner.mainFunction, DeepMiner.validBlocks)
+    );
+
+    public static final List<EnchantmentData> onLivingDropsEnchantments = Arrays.asList(
+
     );
 }

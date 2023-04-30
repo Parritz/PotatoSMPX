@@ -4,17 +4,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.config.EnchantmentFunction;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
 import java.util.*;
 
 import static perhaps.potatosmpx.api.config.ConfigCommon.cropCompressorDrops;
-import static perhaps.potatosmpx.api.onDrop.OnDrop.addItems;
+import static perhaps.potatosmpx.api.onDrop.OnDrop.handleDrops;
 
 public class cropCompressorBreak {
     public static int priority = 3;
@@ -77,12 +77,12 @@ public class cropCompressorBreak {
         }
 
         return newItems;
-    } // test
+    }
 
     public static EnchantmentFunction mainFunction = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
         List<ItemStack> newDrops = compressInventory(player);
 
         // Add compressed items to player inventory
-        addItems(newDrops, player, EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem) <= 1, serverWorld, pos.getX(), pos.getY(), pos.getZ());
+        handleDrops((BlockEvent.BreakEvent) event, null, newDrops);
     };
 }

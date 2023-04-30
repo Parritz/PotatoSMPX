@@ -42,7 +42,7 @@ public class quakeBreak {
 					Block block = state.getBlock();
 
 					if (isStoneBased(block)) {
-						List<ItemStack> drops = getDrop(state, serverWorld, pos, player, heldItem, false);
+						List<ItemStack> drops = Block.getDrops(state, serverWorld, pos, null, player, heldItem);
 						blockDrops.addAll(drops);
 
 						world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
@@ -57,7 +57,7 @@ public class quakeBreak {
 		if (!PlayerSkillBase.willRunEnchantment(player, 0.1f, level)) return;
 
 		if (isStoneBased(block)) {
-			breakBlocksInArea(playerWorld, pos, player, getDrop(state, serverWorld, pos, player, heldItem, true), heldItem, serverWorld);
+			breakBlocksInArea(playerWorld, pos, player, Block.getDrops(state, serverWorld, pos, null, player, heldItem), heldItem, serverWorld);
 		}
 	};
 }

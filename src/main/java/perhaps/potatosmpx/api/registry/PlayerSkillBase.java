@@ -1,10 +1,7 @@
 package perhaps.potatosmpx.api.registry;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class PlayerSkillBase {

@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static perhaps.potatosmpx.api.config.ConfigCommon.composterDrops;
-import static perhaps.potatosmpx.api.config.ConfigCommon.cropCompressorDrops;
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
 
 public class composterBreak {
     public static int priority = 1;
@@ -27,7 +25,7 @@ public class composterBreak {
     public static Enchantment enchantment = EnchantmentBase.COMPOSTER.get();
 
     public static EnchantmentFunction mainFunction = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
-        List<ItemStack> cropDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
+        List<ItemStack> cropDrops = Block.getDrops(state, serverWorld, pos, null, player, heldItem);
 
         for (ItemStack itemStack : player.getInventory().items) {
             Item cropItem = itemStack.getItem();

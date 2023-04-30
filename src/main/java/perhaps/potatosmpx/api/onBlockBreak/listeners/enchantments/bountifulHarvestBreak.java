@@ -29,7 +29,7 @@ public class bountifulHarvestBreak {
 	public static Enchantment enchantment = EnchantmentBase.BOUNTIFUL_HARVEST.get();
 
 	public static EnchantmentFunction mainFunction = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
-		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
+		List<ItemStack> blockDrops = Block.getDrops(state, serverWorld, pos, null, player, heldItem);
 
 		// Obtain the player's luck
 		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;

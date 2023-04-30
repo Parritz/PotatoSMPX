@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/cube_column",
   "textures": {
-    "end": "potatosmpx:block/double_compressed_hay_block_top",
-    "side": "potatosmpx:block/double_compressed_hay_block_side"
+    "end": "potatosmpx:block/compressed_hay/double/double_compressed_hay_block_top",
+    "side": "potatosmpx:block/compressed_hay/double/double_compressed_hay_block_side"
   }
 }

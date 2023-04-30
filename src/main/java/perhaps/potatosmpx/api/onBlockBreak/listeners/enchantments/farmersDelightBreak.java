@@ -16,8 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static perhaps.potatosmpx.api.onBlockBreak.OnBlockBreak.getDrop;
-
 public class farmersDelightBreak {
 	public static int priority = 2;
 	public static final List<Class<? extends Block>> validBlocks = Arrays.asList(
@@ -27,7 +25,7 @@ public class farmersDelightBreak {
 	public static String tag = "drop";
 	public static Enchantment enchantment = EnchantmentBase.FARMERS_DELIGHT.get();
 	public static EnchantmentFunction mainFunction = (event, level, heldItem, state, block, serverWorld, playerWorld, pos, player) -> {
-		List<ItemStack> blockDrops = getDrop(state, serverWorld, pos, player, heldItem, true);
+		List<ItemStack> blockDrops = Block.getDrops(state, serverWorld, pos, null, player, heldItem);
 
 		if (!PlayerSkillBase.willRunEnchantment(player, 0.05f, level)) return;
 		double playerLuck = PlayerSkillBase.getLuck(player) / 100.0;

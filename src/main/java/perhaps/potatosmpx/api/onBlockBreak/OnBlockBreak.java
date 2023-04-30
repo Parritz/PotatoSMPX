@@ -1,6 +1,5 @@
 package perhaps.potatosmpx.api.onBlockBreak;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -16,10 +15,10 @@ import net.minecraftforge.event.world.BlockEvent;
 import perhaps.potatosmpx.api.config.*;
 import perhaps.potatosmpx.api.registry.EnchantmentBase;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static perhaps.potatosmpx.api.config.EnchantmentData.onBlockBreakEnchantments;
+import static perhaps.potatosmpx.api.onDrop.OnDrop.handleDrops;
 
 public class OnBlockBreak {
     private static final Map<Enchantment, EnchantmentData> enchantmentMapPriority = new HashMap<>();
@@ -47,23 +46,6 @@ public class OnBlockBreak {
         blockMap.remove(pos);
     }
 
-    public static List<ItemStack> getDrop(BlockState state, ServerLevel world, BlockPos pos, Player player, ItemStack heldItem, boolean createDropT) {
-        if (blockMap.containsKey(pos)) return blockMap.get(pos);
-
-        List<ItemStack> blockDrops = Block.getDrops(state, world, pos, null, player, heldItem);
-        if (createDropT) createDrop(pos, blockDrops);
-
-        return blockDrops;
-    }
-
-    public static Pair<List<ItemStack>, BlockState> getDropNew(List<ItemStack> drops, @Nullable BlockState state) {
-        // my original function wasn't at all what was wanted so it got nuked
-        // im confused by what perhaps wants & im bad at forge let alone java :sob: (am most useless programmer)
-        // dk why this man still employs me
-
-        return new Pair<>(drops, state);
-    }
-
     public static boolean isSeed(Item item) {
         return WeightedItems.cropSeeds.contains(item);
     }
@@ -71,17 +53,6 @@ public class OnBlockBreak {
     public static void dropItem(ItemStack itemStack, ServerLevel world, int blockx, int blocky, int blockz) {
         ItemEntity itemEntity = new ItemEntity(world, blockx, blocky, blockz, itemStack);
         world.addFreshEntity(itemEntity);
-    }
-
-    public static void addItems(List<ItemStack> drops, Player player, boolean magnetism, ServerLevel serverWorld, int blockX, int blockY, int blockZ) {
-        for (ItemStack itemDrop : drops) {
-            if (itemDrop.getCount() > 0) {
-                boolean success = magnetism ? player.getInventory().add(itemDrop) : false;
-                if (!success) {
-                    dropItem(itemDrop, serverWorld, blockX, blockY, blockZ);
-                }
-            }
-        }
     }
 
     public static void listenBlockBreak(BlockEvent.BreakEvent breakEvent) {
@@ -94,7 +65,6 @@ public class OnBlockBreak {
             for (EnchantmentData data : onBlockBreakEnchantments) {
                 int priority = data.getPriority();
                 if (priority == 0) continue;
-
                 Enchantment enchantment = data.getEnchantment();
 
                 if (priority == 1) {
@@ -146,17 +116,13 @@ public class OnBlockBreak {
         }
 
         int magnetismLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentBase.MAGNETISM.get(), heldItem);
-
+        System.out.println("Reached 2");
         if (enchantmentsPassed <= 0) return;
-        int blockX = (int) (pos.getX() + 0.5);
-        int blockY = (int) (pos.getY() + 0.5);
-        int blockZ = (int) (pos.getZ() + 0.5);
+        System.out.println("Reached 3");
 
+        List<ItemStack> blockDrops = Block.getDrops(state, serverWorld, pos, null, player, heldItem);
         breakEvent.setCanceled(true);
-        for (ItemStack drop : getDrop(state, serverWorld, pos, player, heldItem, false)) {
-        }
-
-        addItems(getDrop(state, serverWorld, pos, player, heldItem, false), player, magnetismLevel >= 1, serverWorld, blockX, blockY, blockZ);
+        handleDrops(breakEvent, null, null);
 
         BlockState newState = blockStateMap.containsKey(pos) ? blockStateMap.get(pos) : Blocks.AIR.defaultBlockState();
         playerWorld.setBlock(pos, newState, 3);

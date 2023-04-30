@@ -2,7 +2,6 @@ package perhaps.potatosmpx.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import perhaps.potatosmpx.Potatosmpx;
@@ -16,7 +15,6 @@ public class KeyInit {
 
 	public static void init() {
 		abilitiesKeyMapping = registerKey("Abilities", KeyMapping.CATEGORY_GAMEPLAY, InputConstants.KEY_U);
-		Abilities.init(MinecraftForge.EVENT_BUS);
 	}
 
 	private static KeyMapping registerKey(String name, String category, int keyCode) {
